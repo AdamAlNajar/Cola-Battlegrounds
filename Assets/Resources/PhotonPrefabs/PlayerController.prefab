@@ -5808,6 +5808,7 @@ GameObject:
   - component: {fileID: 3680360809631227885}
   - component: {fileID: 3680360809631227884}
   - component: {fileID: 4780533094740029868}
+  - component: {fileID: 76032087}
   m_Layer: 0
   m_Name: FpsCam
   m_TagString: MainCamera
@@ -5896,6 +5897,66 @@ MonoBehaviour:
   shakeDuration: 0.5
   shakeMagnitude: 0.3
   dampingSpeed: 1
+--- !u!114 &76032087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3680360809631227882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 3680360809631227883}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 0
+  temporalAntialiasing:
+    jitterSpread: 0.75
+    sharpness: 0.25
+    stationaryBlending: 0.95
+    motionBlending: 0.85
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 0
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!1 &4043783759714615672
 GameObject:
   m_ObjectHideFlags: 0
@@ -6769,6 +6830,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8063031115333669117}
   - component: {fileID: 7182219488320789906}
+  - component: {fileID: 8089596210952133438}
   m_Layer: 3
   m_Name: Shotgun
   m_TagString: Shotgun
@@ -6807,17 +6869,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 5
   isAuto: 0
-  range: 250
+  range: 4.95
   fireRate: 7
   shootParticleEffect: {fileID: 3753855448571092157}
   scShake: {fileID: 4780533094740029868}
   gunCam: {fileID: 374756198553384435}
+  bulletImpactPrefab: {fileID: 8504273419926712014, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 100
   reloadTime: 1
   addedAmmo: 0
   ammoText: {fileID: 4381725435923497610}
   reserveAmmoText: {fileID: 938265066263870888}
+--- !u!114 &8089596210952133438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254864387537816135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &7367519957260340388
 GameObject:
   m_ObjectHideFlags: 0
@@ -7263,6 +7348,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7317750167884844021}
   - component: {fileID: 2711676641867645070}
+  - component: {fileID: 8623475465294404133}
   m_Layer: 3
   m_Name: AK47
   m_TagString: AK47
@@ -7305,12 +7391,35 @@ MonoBehaviour:
   shootParticleEffect: {fileID: 6469914018474551102}
   scShake: {fileID: 4780533094740029868}
   gunCam: {fileID: 374756198553384435}
+  bulletImpactPrefab: {fileID: 8504273419926712014, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 250
   reloadTime: 2.5
   addedAmmo: 0
   ammoText: {fileID: 4381725435923497610}
   reserveAmmoText: {fileID: 938265066263870888}
+--- !u!114 &8623475465294404133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7982084626160324943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &8081926674462853387
 GameObject:
   m_ObjectHideFlags: 0

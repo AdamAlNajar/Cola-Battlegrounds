@@ -15,6 +15,7 @@ public class GameModeManager : MonoBehaviour
         Instance = this;
         DetermineGameMode();
     }
+    
 
     public void DetermineGameMode()
     {
@@ -22,10 +23,10 @@ public class GameModeManager : MonoBehaviour
 
         switch (sceneName)
         {
-            case "Map1":
+            case "Map 1":
                 currentGameMode = GameMode.FFA;
                 break;
-            case "Map2":
+            case "Map 2":
                 currentGameMode = GameMode.TDM;
                 break;
             default:

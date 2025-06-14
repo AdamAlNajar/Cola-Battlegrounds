@@ -41,6 +41,7 @@ MonoBehaviour:
   - RPC_ShootEffects
   - RPC_GetKill
   - RPC_RequestTeamAssignment
+  - RPC_Shoot
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

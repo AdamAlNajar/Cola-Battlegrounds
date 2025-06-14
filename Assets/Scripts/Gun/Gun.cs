@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Pun;
 using TMPro;
 using UnityEngine;
+
 public class Gun : MonoBehaviour
 {
     // Basic Properties
@@ -15,7 +16,8 @@ public class Gun : MonoBehaviour
     public ParticleSystem shootParticleEffect;
     public ScreenShake scShake;
     public Camera gunCam;
-    PhotonView pv; // Networking
+    public GameObject bulletImpactPrefab;
+    PhotonView pv,playerPV; // Networking
     // Ammo Vars
     [SerializeField] int currentAmmo;
     [SerializeField] int maxAmmo;
@@ -27,12 +29,15 @@ public class Gun : MonoBehaviour
     public TMP_Text reserveAmmoText;
     void Awake()
     {
-        pv = GetComponentInParent<PhotonView>();
+        pv = GetComponent<PhotonView>(); // The guns pv
+        playerPV = GetComponentInParent<PhotonView>(); // The guns pv
+        if (pv == null)
+            Debug.LogError("[Gun] PhotonView is NULL! RPCs won't work.");
         currentAmmo = maxAmmo;
     }
     void Update()
     {
-        if (!pv.IsMine)
+        if (!playerPV.IsMine)
             return;
         UpdateAmmoUI();
         if (currentAmmo <= 10 && Input.GetKeyDown(KeyCode.R))
@@ -56,13 +61,10 @@ public class Gun : MonoBehaviour
     private IEnumerator Reload()
     {
         isReloading = true; // Set to true to prevent reloading while already reloading.
-
         yield return new WaitForSeconds(reloadTime);
-
         // Add ammo to currentAmmo and subtract from addedAmmo.
         currentAmmo += addedAmmo;
-        addedAmmo -= addedAmmo;
-
+        addedAmmo = 0;
         isReloading = false;
     }
 
@@ -71,12 +73,12 @@ public class Gun : MonoBehaviour
         currentAmmo--;
         scShake.TriggerShake(0.09f);
         shootParticleEffect.Play();
-        if (!pv.IsMine)
+        if (!playerPV.IsMine)
             return;
         RaycastHit hit;
         if (Physics.Raycast(gunCam.transform.position, gunCam.transform.forward, out hit, range) && pv.IsMine)
         {
-            PhotonView pvHit = hit.collider.GetComponent<PhotonView>();
+            PhotonView pvHit = hit.collider.GetComponent<PhotonView>(); //PV of object hit
             // Prevent hitting yourself
             if (pvHit != null && pvHit.IsMine)
             {
@@ -93,8 +95,15 @@ public class Gun : MonoBehaviour
             else
             {
                 Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
+                pv.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal); // the player pv
             }
         }
+    }
+    [PunRPC]
+    void RPC_Shoot(Vector3 hitPos, Vector3 hitNormal)
+    {
+        GameObject bulletImpact = Instantiate(bulletImpactPrefab, hitPos + hitNormal * 0.01f, Quaternion.LookRotation(-hitNormal));
+        Destroy(bulletImpact, 5f);
     }
     void UpdateAmmoUI()
     {
