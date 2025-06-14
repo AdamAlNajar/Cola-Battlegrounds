@@ -1,13 +1,10 @@
 using System.IO;
-using ExitGames.Client.Photon;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager instance;
-
     void Awake()
     {
         if (instance)

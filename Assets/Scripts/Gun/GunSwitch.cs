@@ -66,11 +66,12 @@ public class GunSwitch : MonoBehaviour
 
     private IEnumerator ChangeFOV(float targetFOV)
     {
-        while (Mathf.Abs(playerCam.fieldOfView - targetFOV) > 0.1f)
+        while (playerCam != null && Mathf.Abs(playerCam.fieldOfView - targetFOV) > 0.1f)
         {
             playerCam.fieldOfView = Mathf.Lerp(playerCam.fieldOfView, targetFOV, Time.deltaTime * fovTransitionSpeed);
             yield return null;
         }
-        playerCam.fieldOfView = targetFOV;
+        if(playerCam != null)
+            playerCam.fieldOfView = targetFOV;
     }
 }

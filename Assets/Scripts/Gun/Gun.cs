@@ -72,7 +72,7 @@ public class Gun : MonoBehaviour
     {
         currentAmmo--;
         scShake.TriggerShake(0.09f);
-        shootParticleEffect.Play();
+        pv.RPC(nameof(RPC_ShootEffects), RpcTarget.All);
         if (!playerPV.IsMine)
             return;
         RaycastHit hit;
@@ -95,15 +95,21 @@ public class Gun : MonoBehaviour
             else
             {
                 Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
-                pv.RPC(nameof(RPC_Shoot), RpcTarget.All, hit.point, hit.normal); // the player pv
+                pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal); // the player pv
             }
         }
     }
     [PunRPC]
-    void RPC_Shoot(Vector3 hitPos, Vector3 hitNormal)
+    void RPC_ShootNonDamageable(Vector3 hitPos, Vector3 hitNormal)
     {
         GameObject bulletImpact = Instantiate(bulletImpactPrefab, hitPos + hitNormal * 0.01f, Quaternion.LookRotation(-hitNormal));
         Destroy(bulletImpact, 5f);
+    }
+    [PunRPC]
+    void RPC_ShootEffects()
+    {
+        if (shootParticleEffect != null)
+            shootParticleEffect.Play();
     }
     void UpdateAmmoUI()
     {

@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
+using System.IO;
 public class GameModeManager : MonoBehaviour
 {
     public static GameModeManager Instance;
     public GameMode currentGameMode;
-
+    public Transform akAmmoSpawnPos;
+    public Transform shotAmmoSpawnPos;
     void Awake()
     {
         if (Instance != null)
@@ -14,6 +17,12 @@ public class GameModeManager : MonoBehaviour
         }
         Instance = this;
         DetermineGameMode();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "AK47_Ammo"), akAmmoSpawnPos.position, akAmmoSpawnPos.rotation);
+            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Shotgun_Ammo"), shotAmmoSpawnPos.position, shotAmmoSpawnPos.rotation);
+        }
     }
     
 

@@ -1,11 +1,9 @@
-﻿// Commented code is under review currently
-
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
-public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
+public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
@@ -29,7 +27,7 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
     [SerializeField] GameObject kalashnikovOBJ;
     [SerializeField] GameObject shotGunOBJ;
     [SerializeField] Renderer objRenderer;
-    //[SerializeField] int teamNum;
+    public GameObject cameraHolder;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -42,15 +40,19 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
 
         if (!photonView.IsMine)
         {
-            Destroy(GetComponentInChildren<Camera>().gameObject);
-            Destroy(gameplayCanvas);
+            Destroy(cameraHolder);// Destroys all cameras
+            Destroy(gameplayCanvas);// Destroys gameplay canvas
         }
 
         playerManager = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManager>();
 
         currentHealth = maxHealth;
-
-        //teamNum = Random.Range(1, 2);
+        // If game mode is FFA, set random color to each player to give effect of Pepsi and cola teams even though its FFA
+        if (photonView.IsMine && GameModeManager.Instance.GetCurrentGameMode() == GameMode.FFA)
+        {
+            int randomNum = Random.Range(1, 3);
+            photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomNum);
+        }
     }
 
     void Update()
@@ -100,7 +102,7 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
     }
     public void SetTeamColor(Team team)
     {
-        Color teamColor = Color.white; // default color
+        Color teamColor = Color.red; // default color
 
         switch (team)
         {
@@ -134,7 +136,7 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
             if (other.CompareTag("Shotgun_Ammo"))
             {
                 var shotgunGun = shotGunOBJ.GetComponent<Gun>();
-                shotgunGun.addedAmmo += Random.Range(10,80); // Random Value cuz why not lol
+                shotgunGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
                 PhotonNetwork.Destroy(other.gameObject);
             }
         }
@@ -155,14 +157,14 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
     }
 
 
-    public void TakeDamage(float damage,string attackerName)
+    public void TakeDamage(float damage, string attackerName)
     {
         // Proceed with damage if enemy
         photonView.RPC(nameof(RPC_TakeDamage), photonView.Owner, damage, attackerName);
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage,string attackerName)
+    void RPC_TakeDamage(float damage, string attackerName)
     {
         currentHealth -= damage;
         if (currentHealth <= 0)
@@ -170,5 +172,11 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
             playerManager.Die(attackerName);
         }
         healthBarImage.fillAmount = currentHealth / maxHealth;
+    }
+    [PunRPC]
+    void RPC_SetTeamColor(int teamInt)
+    {
+        Team team = (Team)teamInt;
+        SetTeamColor(team);
     }
 }
