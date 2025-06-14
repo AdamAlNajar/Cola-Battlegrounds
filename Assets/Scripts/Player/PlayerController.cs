@@ -98,6 +98,25 @@ public class PlayerController : MonoBehaviourPunCallbacks,IDamageable
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
         }
     }
+    public void SetTeamColor(Team team)
+    {
+        Color teamColor = Color.white; // default color
+
+        switch (team)
+        {
+            case Team.Cola:
+                teamColor = Color.red;
+                break;
+            case Team.Pepsi:
+                teamColor = Color.blue;
+                break;
+        }
+
+        if (objRenderer != null)
+        {
+            objRenderer.material.color = teamColor;
+        }
+    }
     void OnTriggerEnter(Collider other)
     {
         if (!photonView.IsMine)

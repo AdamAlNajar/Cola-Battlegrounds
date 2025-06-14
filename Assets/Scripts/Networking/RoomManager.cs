@@ -44,6 +44,9 @@ public class RoomManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
             GameModeManager.Instance.DetermineGameMode();
+
+            if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM && PhotonNetwork.IsMasterClient)
+                TeamManager.Instance.AssignTeams();
         }
     }
 

@@ -34,6 +34,12 @@ public class PlayerManager : MonoBehaviour
             0,
             new object[] { photonView.ViewID});
 
+        if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+        {
+            Team myTeam = TeamManager.Instance.GetPlayerTeam(PhotonNetwork.LocalPlayer);
+            Debug.Log("[PlayerManager] Player assigned to team: " + myTeam);
+            // give player color based on team
+        }
         Debug.Log("[PlayerManager] Player spawned.");
     }
     public void Die(string _victimName)
