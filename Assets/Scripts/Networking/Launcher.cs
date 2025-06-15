@@ -118,7 +118,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         // Loads a random map
         //PhotonNetwork.LoadLevel(Random.Range(1,5));
 
-        PhotonNetwork.LoadLevel(1);
+        PhotonNetwork.LoadLevel(2);
     }
 
     public override void OnRoomListUpdate(List<RoomInfo> roomList)

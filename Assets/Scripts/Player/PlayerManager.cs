@@ -32,13 +32,18 @@ public class PlayerManager : MonoBehaviour
             spawnpoint.position,
             Quaternion.identity,
             0,
-            new object[] { photonView.ViewID});
+            new object[] { photonView.ViewID });
 
         if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
         {
             Team myTeam = TeamManager.Instance.GetPlayerTeam(PhotonNetwork.LocalPlayer);
             Debug.Log("[PlayerManager] Player assigned to team: " + myTeam);
-            // give player color based on team
+
+            PhotonView controllerPhotonView = playerController.GetComponent<PhotonView>();
+            if (controllerPhotonView != null)
+            {
+                controllerPhotonView.RPC("RPC_SetTeamColor", RpcTarget.AllBuffered, (int)myTeam);
+            }
         }
         Debug.Log("[PlayerManager] Player spawned.");
     }
@@ -68,5 +73,10 @@ public class PlayerManager : MonoBehaviour
         );
         //Step 4 : Spawn Player again
         StartCoroutine(CreateControllerWithDelay(spawnDelay));
+    }
+    
+    public Team GetTeam()
+    {
+        return TeamManager.Instance.GetPlayerTeam(PhotonNetwork.LocalPlayer);
     }
 }

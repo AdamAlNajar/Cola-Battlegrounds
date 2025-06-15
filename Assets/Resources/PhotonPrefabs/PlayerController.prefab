@@ -5734,6 +5734,7 @@ MonoBehaviour:
   shotGunOBJ: {fileID: 7254864387537816135}
   objRenderer: {fileID: 3680360809014060867}
   cameraHolder: {fileID: 1759183145262125366}
+  team: 0
 --- !u!143 &968224390781680903
 CharacterController:
   m_ObjectHideFlags: 0

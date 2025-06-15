@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [SerializeField] GameObject shotGunOBJ;
     [SerializeField] Renderer objRenderer;
     public GameObject cameraHolder;
+    [SerializeField] Team team;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -52,6 +53,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             int randomNum = Random.Range(1, 3);
             photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomNum);
+        }
+        else if (photonView.IsMine && GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+        {
+            Team myTeam = playerManager.GetTeam();
+            photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, (int)myTeam);
         }
     }
 
@@ -164,7 +170,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     }
 
     [PunRPC]
-    void RPC_TakeDamage(float damage, string attackerName)
+    public void RPC_TakeDamage(float damage, string attackerName)
     {
         currentHealth -= damage;
         if (currentHealth <= 0)
@@ -174,7 +180,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         healthBarImage.fillAmount = currentHealth / maxHealth;
     }
     [PunRPC]
-    void RPC_SetTeamColor(int teamInt)
+    public void RPC_SetTeamColor(int teamInt)
     {
         Team team = (Team)teamInt;
         SetTeamColor(team);
