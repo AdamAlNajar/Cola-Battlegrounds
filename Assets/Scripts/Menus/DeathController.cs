@@ -6,7 +6,6 @@ public class DeathController : MonoBehaviour
 {
     public static DeathController Instance { get; private set; }
     public GameObject deathCanvas;
-    public TMP_Text countdownText;
     public float countdown = 3f;
     void Awake()
     {

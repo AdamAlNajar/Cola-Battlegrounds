@@ -17,7 +17,7 @@ public class Gun : MonoBehaviour
     public ScreenShake scShake;
     public Camera gunCam;
     public GameObject bulletImpactPrefab;
-    PhotonView pv,playerPV; // Networking
+    PhotonView pv, playerPV; // Networking
     // Ammo Vars
     [SerializeField] int currentAmmo;
     [SerializeField] int maxAmmo;
@@ -27,6 +27,7 @@ public class Gun : MonoBehaviour
     //GUI
     public TMP_Text ammoText;
     public TMP_Text reserveAmmoText;
+    public TMP_Text friendlyFireWarning;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -106,6 +107,8 @@ public class Gun : MonoBehaviour
                         if (shooterTeam == targetTeam)
                         {
                             Debug.Log("[Gun] Friendly fire blocked.");
+                            friendlyFireWarning.gameObject.SetActive(true);
+                            Invoke(nameof(Helper_hideFriendlyFireWarning), 3f);
                             return;
                         }
                     }
@@ -119,7 +122,7 @@ public class Gun : MonoBehaviour
             Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
             pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal);
         }
-        
+
     }
     [PunRPC]
     void RPC_ShootNonDamageable(Vector3 hitPos, Vector3 hitNormal)
@@ -157,5 +160,9 @@ public class Gun : MonoBehaviour
         {
             ammoText.text = "Reloading...";
         }
+    }
+    void Helper_hideFriendlyFireWarning()
+    {
+        friendlyFireWarning.gameObject.SetActive(false);
     }
 }
