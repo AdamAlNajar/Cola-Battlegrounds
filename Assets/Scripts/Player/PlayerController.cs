@@ -28,12 +28,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [SerializeField] GameObject shotGunOBJ;
     [SerializeField] Renderer objRenderer;
     public GameObject cameraHolder;
-    [SerializeField] Team team;
+    [HideInInspector] public Team team;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
 
-        // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -41,24 +40,49 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
         if (!photonView.IsMine)
         {
-            Destroy(cameraHolder);// Destroys all cameras
-            Destroy(gameplayCanvas);// Destroys gameplay canvas
+            Destroy(cameraHolder);
+            Destroy(gameplayCanvas);
         }
 
-        playerManager = PhotonView.Find((int)photonView.InstantiationData[0]).GetComponent<PlayerManager>();
+        if (photonView.InstantiationData != null && photonView.InstantiationData.Length > 0)
+        {
+            playerManager = PhotonView.Find((int)photonView.InstantiationData[0])?.GetComponent<PlayerManager>();
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerController] InstantiationData is null. Probably a late joiner.");
+        }
 
         currentHealth = maxHealth;
-        // If game mode is FFA, set random color to each player to give effect of Pepsi and cola teams even though its FFA
-        if (photonView.IsMine && GameModeManager.Instance.GetCurrentGameMode() == GameMode.FFA)
+
+        if (!photonView.IsMine) return;
+
+        GameMode currentMode = GameModeManager.Instance.GetCurrentGameMode();
+
+        switch (currentMode)
         {
-            int randomNum = Random.Range(1, 3);
-            photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomNum);
+            case GameMode.FFA:
+                int randomColorCode = Random.Range(1, 3);
+                photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomColorCode);
+                break;
+
+            case GameMode.TDM:
+                if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
+                {
+                    Team myTeam = (Team)System.Enum.Parse(typeof(Team), teamValue.ToString());
+                    this.team = myTeam;
+                    photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, (int)myTeam);
+                    Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Assigned to team : " + myTeam);
+                }
+                else
+                {
+                    Debug.LogWarning("[PlayerController] Team not set in CustomProperties for TDM.");
+                }
+                break;
         }
-        else if (photonView.IsMine && GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
-        {
-            Team myTeam = playerManager.GetTeam();
-            photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, (int)myTeam);
-        }
+
+        // Longer delay for safety on late joiners
+        Invoke(nameof(SyncTeamFromCustomProperties), 1f);
     }
 
     void Update()
@@ -160,9 +184,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                 gunSwitch.SelectWeapon();
             }
         }
+        if (photonView.IsMine && targetPlayer == PhotonNetwork.LocalPlayer && changedProps.ContainsKey("Team"))
+        {
+            Team updatedTeam = (Team)System.Enum.Parse(typeof(Team), changedProps["Team"].ToString());
+            photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, (int)updatedTeam);
+        }
+        if (targetPlayer == photonView.Owner && changedProps.ContainsKey("Team"))
+        {
+            SyncTeamFromCustomProperties();
+        }
     }
-
-
     public void TakeDamage(float damage, string attackerName)
     {
         // Proceed with damage if enemy
@@ -183,6 +214,19 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public void RPC_SetTeamColor(int teamInt)
     {
         Team team = (Team)teamInt;
-        SetTeamColor(team);
+
+        if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+            SetTeamColor(team);
+        this.team = team;
+    }
+    
+    void SyncTeamFromCustomProperties()
+    {
+        if (photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))
+        {
+            Team newTeam = (Team)System.Enum.Parse(typeof(Team), teamValue.ToString());
+            team = newTeam;  // ✅ Set local team
+            SetTeamColor(newTeam);  // Optional
+        }
     }
 }

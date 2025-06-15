@@ -44,7 +44,6 @@ public class GameModeManager : MonoBehaviour
                 break;
         }
 
-        Debug.Log("[GameModeManager] Game Mode Set To: " + currentGameMode);
     }
 
     public GameMode GetCurrentGameMode()

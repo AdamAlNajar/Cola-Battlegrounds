@@ -70,34 +70,56 @@ public class Gun : MonoBehaviour
 
     void Shoot()
     {
+        if (!playerPV.IsMine)
+            return;
         currentAmmo--;
         scShake.TriggerShake(0.09f);
         pv.RPC(nameof(RPC_ShootEffects), RpcTarget.All);
-        if (!playerPV.IsMine)
-            return;
         RaycastHit hit;
-        if (Physics.Raycast(gunCam.transform.position, gunCam.transform.forward, out hit, range) && pv.IsMine)
+        if (Physics.Raycast(gunCam.transform.position, gunCam.transform.forward, out hit, range))
         {
-            PhotonView pvHit = hit.collider.GetComponent<PhotonView>(); //PV of object hit
-            // Prevent hitting yourself
-            if (pvHit != null && pvHit.IsMine)
+            PhotonView hitPv = hit.collider.GetComponentInParent<PhotonView>();
+
+            if (hitPv != null && hitPv.IsMine)
             {
                 Debug.Log("[Gun] Hit self — ignoring.");
                 return;
             }
 
-            // Safely attempt to damage the target
-            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+            IDamageable damageable = hit.collider.GetComponentInParent<IDamageable>();
             if (damageable != null)
             {
+                if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+                {
+                    var shooter = playerPV.Owner;
+                    var target = hitPv?.Owner;
+
+                    if (shooter != null && target != null &&
+                        shooter.CustomProperties.TryGetValue("Team", out object shooterTeamObj) &&
+                        target.CustomProperties.TryGetValue("Team", out object targetTeamObj))
+                    {
+                        Team shooterTeam = (Team)System.Enum.Parse(typeof(Team), shooterTeamObj.ToString());
+                        Team targetTeam = (Team)System.Enum.Parse(typeof(Team), targetTeamObj.ToString());
+
+                        Debug.Log($"[Gun] Shooter: {shooter.NickName}, Team: {shooterTeam} | Target: {target.NickName}, Team: {targetTeam}");
+
+                        if (shooterTeam == targetTeam)
+                        {
+                            Debug.Log("[Gun] Friendly fire blocked.");
+                            return;
+                        }
+                    }
+                }
+
                 damageable.TakeDamage(damage, PhotonNetwork.LocalPlayer.NickName);
             }
-            else
-            {
-                Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
-                pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal); // the player pv
-            }
         }
+        else
+        {
+            Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
+            pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal);
+        }
+        
     }
     [PunRPC]
     void RPC_ShootNonDamageable(Vector3 hitPos, Vector3 hitNormal)

@@ -36,13 +36,19 @@ public class PlayerManager : MonoBehaviour
 
         if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
         {
-            Team myTeam = TeamManager.Instance.GetPlayerTeam(PhotonNetwork.LocalPlayer);
-            Debug.Log("[PlayerManager] Player assigned to team: " + myTeam);
-
-            PhotonView controllerPhotonView = playerController.GetComponent<PhotonView>();
-            if (controllerPhotonView != null)
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
             {
-                controllerPhotonView.RPC("RPC_SetTeamColor", RpcTarget.AllBuffered, (int)myTeam);
+                Team myTeam = (Team)System.Enum.Parse(typeof(Team), teamValue.ToString());
+
+                PhotonView controllerPhotonView = playerController.GetComponent<PhotonView>();
+                if (controllerPhotonView != null)
+                {
+                    controllerPhotonView.RPC("RPC_SetTeamColor", RpcTarget.AllBuffered, (int)myTeam);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerManager] No team found in CustomProperties — fallback needed?");
             }
         }
         Debug.Log("[PlayerManager] Player spawned.");
