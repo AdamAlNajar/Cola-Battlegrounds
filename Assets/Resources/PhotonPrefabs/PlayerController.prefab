@@ -6049,7 +6049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 2.16, y: 0.58}
+  m_EffectDistance: {x: 4.56, y: 0.58}
   m_UseGraphicAlpha: 1
 --- !u!1 &4218390902949337674
 GameObject:
@@ -7204,7 +7204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 2.16, y: -1}
+  m_EffectDistance: {x: 4.56, y: 0.58}
   m_UseGraphicAlpha: 1
 --- !u!1 &7977814500001697480
 GameObject:
@@ -12842,6 +12842,7 @@ GameObject:
   - component: {fileID: 7652667524822590607}
   - component: {fileID: 1334175824557219818}
   - component: {fileID: 938265066263870888}
+  - component: {fileID: 7035637659665320103}
   m_Layer: 0
   m_Name: R_Ammo TXT_1
   m_TagString: Untagged
@@ -12965,3 +12966,18 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7035637659665320103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8877190505270139599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
