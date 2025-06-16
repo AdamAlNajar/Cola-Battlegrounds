@@ -6,28 +6,32 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    // Basic Properties
+    [Header("Properties")]
     public float damage = 5f;
     public bool isAuto;
     public float range = 100f;
     float nextTimeToFire = 0f;
     public float fireRate;
-    //Extra Properties
+    [Header("Effects")]
     public ParticleSystem shootParticleEffect;
     public ScreenShake scShake;
     public Camera gunCam;
     public GameObject bulletImpactPrefab;
     PhotonView pv, playerPV; // Networking
-    // Ammo Vars
+    [Header("Ammo")]
     [SerializeField] int currentAmmo;
     [SerializeField] int maxAmmo;
     public float reloadTime;
     public int addedAmmo;
     bool isReloading;
-    //GUI
+    [Header("UI")]
     public TMP_Text ammoText;
     public TMP_Text reserveAmmoText;
     public TMP_Text friendlyFireWarning;
+    [Header("Anti-Clipping")]
+    public Transform weaponModel; // Assign the part of the gun mesh to hide
+    public float clipCheckDistance = 0.5f; // Distance from camera to check wall
+    Vector3 defaultLocalPos;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -35,12 +39,14 @@ public class Gun : MonoBehaviour
         if (pv == null)
             Debug.LogError("[Gun] PhotonView is NULL! RPCs won't work.");
         currentAmmo = maxAmmo;
+        defaultLocalPos = weaponModel.localPosition;
     }
     void Update()
     {
         if (!playerPV.IsMine)
             return;
         UpdateAmmoUI();
+        HandleClipping();
         if (currentAmmo <= 10 && Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(Reload());
@@ -56,7 +62,24 @@ public class Gun : MonoBehaviour
         //Manual Guns
         if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto)
         {
-            Shoot();
+            Shoot();  
+        }
+    }
+    void HandleClipping()
+    {
+        RaycastHit hit;
+        Vector3 origin = gunCam.transform.position;
+        Vector3 direction = gunCam.transform.forward;
+
+        if (Physics.Raycast(origin, direction, out hit, clipCheckDistance))
+        {
+            // Push weapon back
+            weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, defaultLocalPos - new Vector3(0, 0, 0.2f), Time.deltaTime * 10f);
+        }
+        else
+        {
+            // Reset to original position
+            weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, defaultLocalPos, Time.deltaTime * 10f);
         }
     }
     private IEnumerator Reload()

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Photon.Pun;
+﻿using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
@@ -37,7 +36,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [HideInInspector] public Team team;
 
     private CharacterController characterController;
-    private PhotonView photonView;
+    private new PhotonView photonView;
     private PlayerManager playerManager;
     private Vector3 moveDirection = Vector3.zero;
     private float rotationX = 0;
@@ -79,8 +78,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         switch (currentMode)
         {
             case GameMode.FFA:
-                int randomColorCode = Random.Range(1, 3);
-                photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomColorCode);
+                SetRandomColor_FFA();
             break;
 
             case GameMode.TDM:
@@ -166,6 +164,29 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             objRenderer.material.color = teamColor;
         }
+    }
+    public void SetRandomColor_FFA()
+    {
+        // This method makes it so that players get either red or blue color in ffa mode
+        // Only owner should generate and sync color
+        // the below runs locally, but the rpc runs remotely
+        if (!photonView.IsMine) return;
+        Color finalColor = Color.red;
+        int magicNum = Random.Range(1, 3);
+        switch (magicNum)
+        {
+            case 1:
+                if (objRenderer != null)
+                    finalColor = Color.red;
+                break;
+            case 2:
+                if (objRenderer != null)
+                    finalColor = Color.blue;
+                break;
+        }
+        if (objRenderer != null)
+            objRenderer.material.color = finalColor;
+        photonView.RPC(nameof(RPC_SetFFAColor), RpcTarget.OthersBuffered,finalColor.r, finalColor.g, finalColor.b);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -268,6 +289,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (targetView != null)
         {
             PhotonNetwork.Destroy(targetView.gameObject);
+        }
+    }
+    [PunRPC]
+    public void RPC_SetFFAColor(float r, float g, float b)
+    {
+        Color color = new Color(r, g, b);
+        if (objRenderer != null)
+        {
+            objRenderer.material.color = color;
         }
     }
 

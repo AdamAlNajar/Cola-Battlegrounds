@@ -41,7 +41,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
             if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM && PhotonNetwork.IsMasterClient)
             {
-                Invoke(nameof(AssignTeams), 5f);
+                Invoke(nameof(AssignTeams), 3f);
             }
         }
     }

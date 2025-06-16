@@ -90,7 +90,6 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
         Cursor.visible = true;
     }
     //This method is better for syncing frequent updates to not flood photons servers
-    // EG of Client Authorative state replication
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting && PhotonNetwork.IsMasterClient)
