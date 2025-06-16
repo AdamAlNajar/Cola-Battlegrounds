@@ -45,6 +45,8 @@ MonoBehaviour:
   - RPC_SetTeamColor
   - RPC_ShootNonDamageable
   - RPC_EndMatch
+  - RPC_RequestDestroyAmmo
+  - RPC_StartMatch
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

@@ -6,6 +6,16 @@ using TMPro;
 using UnityEngine.SceneManagement;
 public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
 {
+    public static MatchTimer Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject); // Avoid duplicate MatchTimer instances
+            
+        PV = GetComponent<PhotonView>(); 
+    }
     public float matchTime = 60f; // in SEC. 
     public TMP_Text matchTimerText;
     public float timer;
@@ -20,6 +30,7 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
         {
             timer = matchTime;
             isMatchActive = true;
+            PV.RPC(nameof(RPC_StartMatch), RpcTarget.AllBuffered);
         }
     }
     private void Update()
@@ -44,6 +55,11 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
         Debug.Log("Match Ended!");
         ShowMatchEndScreen();
     }
+    [PunRPC]
+    void RPC_StartMatch()
+    {
+        isMatchActive = true;
+    }
     void UpdateTimerUI()
     {
         if (matchTimerText == null) return;
@@ -59,6 +75,7 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
 
     public override void OnLeftRoom()
     {
+        base.OnLeftRoom();
         SceneManager.LoadScene("Menu");
     }
     public void ShowMatchEndScreen()
@@ -77,7 +94,7 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
     {
         if (stream.IsWriting && PhotonNetwork.IsMasterClient)
         {
-            // MASTER IS WRITING ON BOARD
+            // MASTER IS WRITING ON BOARD, TELLING STUDENTS TO COPY
             stream.SendNext(timer);
         }
         else

@@ -73,9 +73,12 @@ public class Gun : MonoBehaviour
     {
         if (!playerPV.IsMine)
             return;
+        if (!MatchTimer.Instance.isMatchActive)
+            return;
         currentAmmo--;
         scShake.TriggerShake(0.09f);
         pv.RPC(nameof(RPC_ShootEffects), RpcTarget.All);
+        SFXManager.Instance.PlaySFX("Shoot");
         RaycastHit hit;
         if (Physics.Raycast(gunCam.transform.position, gunCam.transform.forward, out hit, range))
         {

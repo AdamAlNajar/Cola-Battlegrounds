@@ -1,34 +1,46 @@
-﻿using Photon.Pun;
+﻿using System.Collections;
+using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 {
+    [Header("Movement Settings")]
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
+
+    [Header("Camera & Look")]
     public Camera playerCamera;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
-    CharacterController characterController;
-    Vector3 moveDirection = Vector3.zero;
-    float rotationX = 0;
-    PhotonView photonView;
-    [HideInInspector]
-    public bool canMove = true;
-    PlayerManager playerManager;
+
+    [Header("Health & UI")]
+    public float maxHealth = 100f;
+    public Image healthBarImage;
+    public GameObject gameplayCanvas;
+
+    [Header("Gun Objects")]
+    public GameObject kalashnikovOBJ;
+    public GameObject shotGunOBJ;
     public GunSwitch gunSwitch;
-    public float currentHealth;
-    public float maxHealth;
-    [SerializeField] Image healthBarImage;
-    [SerializeField] GameObject gameplayCanvas;
-    [SerializeField] GameObject kalashnikovOBJ;
-    [SerializeField] GameObject shotGunOBJ;
-    [SerializeField] Renderer objRenderer;
+
+    [Header("Other")]
+    public Renderer objRenderer;
     public GameObject cameraHolder;
+
+    [HideInInspector] public float currentHealth;
+    [HideInInspector] public bool canMove = true;
     [HideInInspector] public Team team;
+
+    private CharacterController characterController;
+    private PhotonView photonView;
+    private PlayerManager playerManager;
+    private Vector3 moveDirection = Vector3.zero;
+    private float rotationX = 0;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -38,9 +50,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
         photonView = GetComponent<PhotonView>();
 
+        //Remote Player
         if (!photonView.IsMine)
         {
-            Destroy(cameraHolder);
+            Camera cam = cameraHolder.GetComponentInChildren<Camera>();
+            PostProcessLayer ppLayer = cameraHolder.GetComponentInChildren<PostProcessLayer>();
+            Destroy(ppLayer);
+            Destroy(cam);
+            ////////////////////////
             Destroy(gameplayCanvas);
         }
 
@@ -64,7 +81,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             case GameMode.FFA:
                 int randomColorCode = Random.Range(1, 3);
                 photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, randomColorCode);
-                break;
+            break;
 
             case GameMode.TDM:
                 if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
@@ -78,16 +95,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                 {
                     Debug.LogWarning("[PlayerController] Team not set in CustomProperties for TDM.");
                 }
-                break;
+            break;
         }
 
         // Longer delay for safety on late joiners
         Invoke(nameof(SyncTeamFromCustomProperties), 1f);
     }
-
     void Update()
     {
         if (!photonView.IsMine)
+            return;
+        if (!MatchTimer.Instance.isMatchActive)
             return;
         if (transform.position.y < -30f)
         {
@@ -161,13 +179,35 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             {
                 var akGun = kalashnikovOBJ.GetComponent<Gun>();
                 akGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
-                PhotonNetwork.Destroy(other.gameObject);
+                PhotonView otherView = other.GetComponent<PhotonView>();
+                if (otherView != null)
+                {
+                    if (otherView.IsMine || PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(otherView.gameObject);
+                    }
+                    else
+                    {
+                        photonView.RPC("RPC_RequestDestroyAmmo", RpcTarget.MasterClient, otherView.ViewID);
+                    }
+                }
             }
             if (other.CompareTag("Shotgun_Ammo"))
             {
                 var shotgunGun = shotGunOBJ.GetComponent<Gun>();
                 shotgunGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
-                PhotonNetwork.Destroy(other.gameObject);
+                PhotonView otherView = other.GetComponent<PhotonView>();
+                if (otherView != null)
+                {
+                    if (otherView.IsMine || PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(otherView.gameObject);
+                    }
+                    else
+                    {
+                        photonView.RPC("RPC_RequestDestroyAmmo", RpcTarget.MasterClient, otherView.ViewID);
+                    }
+                }
             }
         }
     }
@@ -204,6 +244,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public void RPC_TakeDamage(float damage, string attackerName)
     {
         currentHealth -= damage;
+        SFXManager.Instance.PlaySFX("Take Damage");
         if (currentHealth <= 0)
         {
             playerManager.Die(attackerName);
@@ -219,7 +260,17 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             SetTeamColor(team);
         this.team = team;
     }
-    
+    [PunRPC]
+    void RPC_RequestDestroyAmmo(int viewID)
+    {
+        PhotonView targetView = PhotonView.Find(viewID);
+
+        if (targetView != null)
+        {
+            PhotonNetwork.Destroy(targetView.gameObject);
+        }
+    }
+
     void SyncTeamFromCustomProperties()
     {
         if (photonView.Owner.CustomProperties.TryGetValue("Team", out object teamValue))

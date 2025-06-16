@@ -22,6 +22,7 @@ public class DeathController : MonoBehaviour
     {
         deathCanvas.SetActive(true);
         Debug.Log("Death canvas shown.");
+        SFXManager.Instance.PlaySFX("Die");
         Invoke(nameof(HideDeathCanvas), 3f);
     }
 

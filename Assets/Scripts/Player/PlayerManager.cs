@@ -13,18 +13,19 @@ public class PlayerManager : MonoBehaviour
     {
         photonView = GetComponent<PhotonView>();
     }
-
-    void Start()
-    {
+    private void Start() {
         if (photonView.IsMine)
-        {
             StartCoroutine(CreateControllerWithDelay(spawnDelay));
-        }
     }
-
     IEnumerator CreateControllerWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        // ✅ Check again after the delay
+        if (MatchTimer.Instance == null || !MatchTimer.Instance.isMatchActive)
+        {
+            Debug.Log("[PlayerManager] Respawn aborted — match is not active.");
+            yield break;
+        }
         Transform spawnpoint = SpawnManager.Instance.getSpawnPoint();
 
         playerController = PhotonNetwork.Instantiate(
@@ -78,11 +79,23 @@ public class PlayerManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.NickName
         );
         //Step 4 : Spawn Player again
-        StartCoroutine(CreateControllerWithDelay(spawnDelay));
+        if (MatchTimer.Instance != null && MatchTimer.Instance.isMatchActive)
+            StartCoroutine(CreateControllerWithDelay(spawnDelay));
+        else
+        {
+            Debug.Log("[PlayerManager] Will Not spawn Player!");
+        }
     }
-    
+
     public Team GetTeam()
     {
         return TeamManager.Instance.GetPlayerTeam(PhotonNetwork.LocalPlayer);
+    }
+    void OnDisable()
+    {
+        if (playerController != null && playerController.GetComponent<PhotonView>().IsMine)
+        {
+            PhotonNetwork.Destroy(playerController);
+        }
     }
 }

@@ -44,6 +44,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         // Show Master lobby (title screen)
         Debug.Log("Joined Lobby");
         MenuManager.instance.OpenMenu("title menu");
+        SFXManager.Instance.PlayMusic("Main Track");
     }
 
     public void CreateRoom()
