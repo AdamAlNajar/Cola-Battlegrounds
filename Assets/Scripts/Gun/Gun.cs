@@ -164,7 +164,7 @@ public class Gun : MonoBehaviour
     }
     void UpdateAmmoUI()
     {
-        ammoText.color = Color.white;
+        ammoText.color = Color.black;
         reserveAmmoText.text = addedAmmo.ToString("0000");
 
         // Update the ammo text

@@ -8,6 +8,9 @@ public class GameModeManager : MonoBehaviour
     public GameMode currentGameMode;
     public Transform akAmmoSpawnPos;
     public Transform shotAmmoSpawnPos;
+    public GameObject gameUI;
+    public GameObject deathUI;
+    public GameObject loadingUI;
     void Awake()
     {
         if (Instance != null)
@@ -23,8 +26,9 @@ public class GameModeManager : MonoBehaviour
             PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "AK47_Ammo"), akAmmoSpawnPos.position, akAmmoSpawnPos.rotation);
             PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Shotgun_Ammo"), shotAmmoSpawnPos.position, shotAmmoSpawnPos.rotation);
         }
+        Loading();
     }
-    
+
 
     public void DetermineGameMode()
     {
@@ -34,9 +38,11 @@ public class GameModeManager : MonoBehaviour
         {
             case "Map 1":
                 currentGameMode = GameMode.FFA;
+                DiscordRPCManager.Instance.ChangeStatus("Playing a match", "FFA");
                 break;
             case "Map 2":
                 currentGameMode = GameMode.TDM;
+                DiscordRPCManager.Instance.ChangeStatus("Playing a match", "TDM");
                 break;
             default:
                 Debug.LogWarning("Scene name does not match a known map, defaulting to FFA.");
@@ -49,5 +55,18 @@ public class GameModeManager : MonoBehaviour
     public GameMode GetCurrentGameMode()
     {
         return currentGameMode;
+    }
+    void Loading()
+    {
+        gameUI.SetActive(false);
+        deathUI.SetActive(false);
+        loadingUI.SetActive(true);
+        Invoke(nameof(Hide), 3f);
+    }
+    void Hide()
+    {
+        gameUI.SetActive(true);
+        deathUI.SetActive(true);
+        loadingUI.SetActive(false);
     }
 }

@@ -45,6 +45,14 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("Joined Lobby");
         MenuManager.instance.OpenMenu("title menu");
         SFXManager.Instance.PlayMusic("Main Track");
+        if (DiscordRPCManager.Instance != null)
+        {
+            DiscordRPCManager.Instance.ChangeStatus("In Menu", "Browsing Lobbies");
+        }
+        else
+        {
+            Debug.Log("DiscordRPCManager is null [Launcher]");
+        }
     }
 
     public void CreateRoom()
@@ -87,6 +95,14 @@ public class Launcher : MonoBehaviourPunCallbacks
             Instantiate(playerListItemPrefab, playerListContent).GetComponent<PlayerListItem>().Setup(players[i]);
         }
         startGameButton.SetActive(PhotonNetwork.IsMasterClient); // Only show start game button to room host
+        if (DiscordRPCManager.Instance != null)
+        {
+            DiscordRPCManager.Instance.ChangeStatus("In Room", $"Room: {PhotonNetwork.CurrentRoom.Name}");
+        }
+        else
+        {
+            Debug.Log("DiscordRPCManager is null [Launcher]");
+        }
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)

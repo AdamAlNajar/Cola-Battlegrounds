@@ -54,8 +54,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             Camera cam = cameraHolder.GetComponentInChildren<Camera>();
             PostProcessLayer ppLayer = cameraHolder.GetComponentInChildren<PostProcessLayer>();
+            AudioListener audioListener = cameraHolder.GetComponentInChildren<AudioListener>();
             Destroy(ppLayer);
             Destroy(cam);
+            Destroy(audioListener);
             ////////////////////////
             Destroy(gameplayCanvas);
         }

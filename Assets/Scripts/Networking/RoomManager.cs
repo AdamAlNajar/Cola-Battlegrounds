@@ -59,7 +59,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         Debug.Log("[RoomManager] Assigned teams (after short delay).");
     }
 
-     // New: Handle late joiners by assigning team immediately
+    //Handle late joiners by assigning team immediately
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
         Debug.Log("[RoomManager] New player joined: " + newPlayer.NickName);
