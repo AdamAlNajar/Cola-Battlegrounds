@@ -8,6 +8,8 @@ public class GameModeManager : MonoBehaviour
     public GameMode currentGameMode;
     public Transform akAmmoSpawnPos;
     public Transform shotAmmoSpawnPos;
+    public Transform pepsiSpawnPos;
+    public Transform colaSpawnPos;
     public GameObject gameUI;
     public GameObject deathUI;
     public GameObject loadingUI;
@@ -25,6 +27,8 @@ public class GameModeManager : MonoBehaviour
         {
             PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "AK47_Ammo"), akAmmoSpawnPos.position, akAmmoSpawnPos.rotation);
             PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Shotgun_Ammo"), shotAmmoSpawnPos.position, shotAmmoSpawnPos.rotation);
+            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Cola"), colaSpawnPos.position, colaSpawnPos.rotation);
+            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Pepsi"), pepsiSpawnPos.position, pepsiSpawnPos.rotation);
         }
         Loading();
     }

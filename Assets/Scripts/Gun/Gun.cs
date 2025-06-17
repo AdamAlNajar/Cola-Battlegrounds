@@ -141,12 +141,11 @@ public class Gun : MonoBehaviour
                 }
 
                 damageable.TakeDamage(damage, PhotonNetwork.LocalPlayer.NickName);
+            } else
+            {
+                Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
+                pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal);
             }
-        }
-        else
-        {
-            Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
-            pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal);
         }
 
     }
@@ -164,7 +163,7 @@ public class Gun : MonoBehaviour
     }
     void UpdateAmmoUI()
     {
-        ammoText.color = Color.black;
+        ammoText.color = Color.white;
         reserveAmmoText.text = addedAmmo.ToString("0000");
 
         // Update the ammo text
