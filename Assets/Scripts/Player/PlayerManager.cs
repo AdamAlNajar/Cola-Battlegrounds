@@ -68,7 +68,6 @@ public class PlayerManager : MonoBehaviour
             {
                 Debug.Log("DeathController NULL");
             }
-            SFXManager.Instance.PlaySFX("Death");
         }
         //Step 2 : Delete player
         PhotonNetwork.Destroy(playerController);

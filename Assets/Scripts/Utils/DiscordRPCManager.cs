@@ -6,39 +6,79 @@ public class DiscordRPCManager : MonoBehaviour
 {
     public static DiscordRPCManager Instance;
     Discord.Discord discord;
+    bool discordInit = false;
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance != null)
             Destroy(gameObject);
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
     void Start()
     {
-        discord = new Discord.Discord(1382033954315440249, (ulong)Discord.CreateFlags.NoRequireDiscord);
+        try
+        {
+            discord = new Discord.Discord(1382033954315440249, (ulong)Discord.CreateFlags.NoRequireDiscord);
+            discordInit = true;
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("Discord not available: " + e.Message);
+            discordInit = false;
+        }
     }
     private void OnDisable()
     {
-        discord.Dispose();
+        if (discordInit&& discord != null)
+        {
+            discord.Dispose();
+        }
     }
     public void ChangeStatus(string state, string details)
     {
-        var activityManager = discord.GetActivityManager();
-        var activity = new Discord.Activity
+        if (!discordInit)
+            return;
+        try
         {
-            State = state,
-            Details = details,
-            Assets =
+            var activityManager = discord.GetActivityManager();
+            var activity = new Discord.Activity
             {
-                LargeImage = "main"
-            }
-        };
-        activityManager.UpdateActivity(activity, (res) =>
+                State = state,
+                Details = details,
+                Assets =
+                {
+                    LargeImage = "main"
+                }
+            };
+            activityManager.UpdateActivity(activity, (res) =>
+            {
+                if (res == Discord.Result.Ok)
+                {
+                    Debug.Log("Discord activity updated successfully.");
+                }
+                else
+                {
+                    Debug.LogWarning("Failed to update Discord activity: " + res);
+                }
+            });
+        }
+        catch (System.Exception e)
         {
-            Debug.Log("Activity Updated Successfully");
-        });
+            Debug.LogWarning("Discord RPC error: " + e.Message);
+        }
     }
     private void Update() {
-        discord.RunCallbacks();
+        if (discordInit && discord != null)
+        {
+            try
+            {
+                discord.RunCallbacks();
+            }
+            catch
+            {
+                Debug.Log("[DiscordRPCManager] RPC FAILED TO RUN");
+                discordInit = false;
+            }
+        }
     }
 }

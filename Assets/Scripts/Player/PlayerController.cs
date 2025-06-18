@@ -1,5 +1,7 @@
-﻿using Photon.Pun;
+﻿using System.Collections;
+using Photon.Pun;
 using Photon.Realtime;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
@@ -21,6 +23,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public float maxHealth = 100f;
     public Image healthBarImage;
     public GameObject gameplayCanvas;
+    public TMP_Text powerUpText;
 
     [Header("Gun Objects")]
     public GameObject kalashnikovOBJ;
@@ -30,6 +33,9 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [Header("Other")]
     public Renderer objRenderer;
     public GameObject cameraHolder;
+    public float originalWalkingSpeed;
+    public float originalRunningSpeed;
+    private Coroutine colaSpeedBoostRoutine;
 
     [HideInInspector] public float currentHealth;
     [HideInInspector] public bool canMove = true;
@@ -81,7 +87,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             case GameMode.FFA:
                 SetRandomColor_FFA();
-            break;
+                break;
 
             case GameMode.TDM:
                 if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
@@ -95,7 +101,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                 {
                     Debug.LogWarning("[PlayerController] Team not set in CustomProperties for TDM.");
                 }
-            break;
+                break;
         }
 
         // Longer delay for safety on late joiners
@@ -188,7 +194,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
         if (objRenderer != null)
             objRenderer.material.color = finalColor;
-        photonView.RPC(nameof(RPC_SetFFAColor), RpcTarget.OthersBuffered,finalColor.r, finalColor.g, finalColor.b);
+        photonView.RPC(nameof(RPC_SetFFAColor), RpcTarget.OthersBuffered, finalColor.r, finalColor.g, finalColor.b);
     }
     void OnTriggerEnter(Collider other)
     {
@@ -202,6 +208,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             {
                 var akGun = kalashnikovOBJ.GetComponent<Gun>();
                 akGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
+                SFXManager.Instance.PlaySFX("Power Up");
+                powerUpText.gameObject.SetActive(true);
+                powerUpText.text = "Added " + akGun.addedAmmo + " AK bullets";
+                Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
                 PhotonView otherView = other.GetComponent<PhotonView>();
                 if (otherView != null)
                 {
@@ -211,7 +221,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                     }
                     else
                     {
-                        photonView.RPC("RPC_RequestDestroyAmmo", RpcTarget.MasterClient, otherView.ViewID);
+                        photonView.RPC("RPC_RequestDestroyObject", RpcTarget.MasterClient, otherView.ViewID);
                     }
                 }
             }
@@ -219,6 +229,10 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             {
                 var shotgunGun = shotGunOBJ.GetComponent<Gun>();
                 shotgunGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
+                SFXManager.Instance.PlaySFX("Power Up");
+                powerUpText.gameObject.SetActive(true);
+                powerUpText.text = "Added " + shotgunGun.addedAmmo + " Shotgun bullets";
+                Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
                 PhotonView otherView = other.GetComponent<PhotonView>();
                 if (otherView != null)
                 {
@@ -228,7 +242,54 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                     }
                     else
                     {
-                        photonView.RPC("RPC_RequestDestroyAmmo", RpcTarget.MasterClient, otherView.ViewID);
+                        photonView.RPC("RPC_RequestDestroyObject", RpcTarget.MasterClient, otherView.ViewID);
+                    }
+                }
+            }
+            if (other.CompareTag("Cola"))
+            {
+                float boostAmount = 5f;
+                float boostDuration = 10f;
+
+                if (colaSpeedBoostRoutine != null)
+                    StartCoroutine(ColaSpeedBoost(boostAmount, boostDuration));
+                colaSpeedBoostRoutine = StartCoroutine(ColaSpeedBoost(boostAmount, boostDuration));
+                powerUpText.gameObject.SetActive(true);
+                powerUpText.text = "Speed Boost for 30 SEC";
+                Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
+                PhotonView otherView = other.GetComponent<PhotonView>();
+                if (otherView != null)
+                {
+                    if (otherView.IsMine || PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(otherView.gameObject);
+                    }
+                    else
+                    {
+                        photonView.RPC("RPC_RequestDestroyObject", RpcTarget.MasterClient, otherView.ViewID);
+                    }
+                }
+            }
+            if (other.CompareTag("Pepsi"))
+            {
+                float damageBoost = 20f; // Increase damage by 20
+                float duration = 30f;
+
+                kalashnikovOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
+                shotGunOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
+                powerUpText.gameObject.SetActive(true);
+                powerUpText.text = "+20 Damage for 30 SEC";
+                Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
+                PhotonView otherView = other.GetComponent<PhotonView>();
+                if (otherView != null)
+                {
+                    if (otherView.IsMine || PhotonNetwork.IsMasterClient)
+                    {
+                        PhotonNetwork.Destroy(otherView.gameObject);
+                    }
+                    else
+                    {
+                        photonView.RPC("RPC_RequestDestroyObject", RpcTarget.MasterClient, otherView.ViewID);
                     }
                 }
             }
@@ -261,15 +322,16 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     {
         // Proceed with damage if enemy
         photonView.RPC(nameof(RPC_TakeDamage), photonView.Owner, damage, attackerName);
+        SFXManager.Instance.PlaySFX("Take Damage");
     }
 
     [PunRPC]
     public void RPC_TakeDamage(float damage, string attackerName)
     {
         currentHealth -= damage;
-        SFXManager.Instance.PlaySFX("Take Damage");
         if (currentHealth <= 0)
         {
+            SFXManager.Instance.PlaySFX("Death");
             playerManager.Die(attackerName);
         }
         healthBarImage.fillAmount = currentHealth / maxHealth;
@@ -284,7 +346,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         this.team = team;
     }
     [PunRPC]
-    void RPC_RequestDestroyAmmo(int viewID)
+    void RPC_RequestDestroyObject(int viewID)
     {
         PhotonView targetView = PhotonView.Find(viewID);
 
@@ -311,5 +373,34 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             team = newTeam;  // ✅ Set local team
             SetTeamColor(newTeam);  // Optional
         }
+    }
+    private IEnumerator ColaSpeedBoost(float boostAmount, float duration)
+    {
+        // Save original speeds
+        originalWalkingSpeed = walkingSpeed;
+        originalRunningSpeed = runningSpeed;
+
+        // Apply boosted speed
+        walkingSpeed += boostAmount;
+        runningSpeed += boostAmount;
+
+        //Add visual feedback or sound
+        SFXManager.Instance.PlaySFX("Power Up");
+
+        yield return new WaitForSeconds(duration);
+
+        // Revert to original speeds
+        walkingSpeed = originalWalkingSpeed;
+        runningSpeed = originalRunningSpeed;
+    }
+    public void Helper_HideGameObjectAfterDelay(GameObject gObject, float delay)
+    {
+        StartCoroutine(HideAfterDelay(gObject, delay));
+    }
+
+    IEnumerator HideAfterDelay(GameObject gObject, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gObject.SetActive(false);
     }
 }

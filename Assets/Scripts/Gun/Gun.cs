@@ -32,6 +32,10 @@ public class Gun : MonoBehaviour
     public Transform weaponModel; // Assign the part of the gun mesh to hide
     public float clipCheckDistance = 0.5f; // Distance from camera to check wall
     Vector3 defaultLocalPos;
+
+    [Header("Other")]
+    Coroutine damageBoostRoutine;
+    float originalDamage;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -62,7 +66,7 @@ public class Gun : MonoBehaviour
         //Manual Guns
         if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto)
         {
-            Shoot();  
+            Shoot();
         }
     }
     void HandleClipping()
@@ -141,7 +145,8 @@ public class Gun : MonoBehaviour
                 }
 
                 damageable.TakeDamage(damage, PhotonNetwork.LocalPlayer.NickName);
-            } else
+            }
+            else
             {
                 Debug.Log("[Gun] Hit non-damageable object: " + hit.collider.name);
                 pv.RPC(nameof(RPC_ShootNonDamageable), RpcTarget.All, hit.point, hit.normal);
@@ -189,5 +194,20 @@ public class Gun : MonoBehaviour
     void Helper_hideFriendlyFireWarning()
     {
         friendlyFireWarning.gameObject.SetActive(false);
+    }
+    public void Helper_ActivateDamageBoost(float boostAmnt, float boostDuration)
+    {
+        if (damageBoostRoutine != null)
+            StopCoroutine(damageBoostRoutine);
+        damageBoostRoutine = StartCoroutine(damageBoost(boostAmnt, boostDuration));
+    }
+    IEnumerator damageBoost(float boostAmnt, float boostDuration)
+    {
+        damage = originalDamage;
+        damage += boostAmnt;
+        Debug.Log("Activated");
+        SFXManager.Instance.PlaySFX("Power Up");
+        yield return new WaitForSeconds(boostDuration);
+        damage = originalDamage;
     }
 }

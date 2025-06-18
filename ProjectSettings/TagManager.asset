@@ -8,6 +8,8 @@ TagManager:
   - Shotgun_Ammo
   - AK47
   - Shotgun
+  - Cola
+  - Pepsi
   layers:
   - Default
   - TransparentFX
