@@ -10,9 +10,13 @@ public class DiscordRPCManager : MonoBehaviour
     private void Awake()
     {
         if (Instance != null)
+        {
             Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        
     }
     void Start()
     {

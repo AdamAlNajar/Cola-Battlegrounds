@@ -77,6 +77,7 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
     {
         base.OnLeftRoom();
         SceneManager.LoadScene("Menu");
+        PhotonNetwork.JoinLobby();
     }
     public void ShowMatchEndScreen()
     {

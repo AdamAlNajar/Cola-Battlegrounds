@@ -39,8 +39,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
 
     [HideInInspector] public float currentHealth;
     [HideInInspector] public bool canMove = true;
-    [HideInInspector] public Team team;
-
+    public Team team;
     private CharacterController characterController;
     private new PhotonView photonView;
     private PlayerManager playerManager;
@@ -105,7 +104,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         }
 
         // Longer delay for safety on late joiners
-        Invoke(nameof(SyncTeamFromCustomProperties), 1f);
+        Invoke(nameof(SyncTeamFromCustomProperties), 2f);
     }
     void Update()
     {
@@ -207,10 +206,11 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             if (other.CompareTag("AK47_Ammo"))
             {
                 var akGun = kalashnikovOBJ.GetComponent<Gun>();
-                akGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
+                int ammoToAdd = Random.Range(10, 81); // Random Value cuz why not lol
+                akGun.addedAmmo += ammoToAdd;
                 SFXManager.Instance.PlaySFX("Power Up");
                 powerUpText.gameObject.SetActive(true);
-                powerUpText.text = "Added " + akGun.addedAmmo + " AK bullets";
+                powerUpText.text = "Added " + ammoToAdd + " AK bullets";
                 Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
                 PhotonView otherView = other.GetComponent<PhotonView>();
                 if (otherView != null)
@@ -227,11 +227,12 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
             }
             if (other.CompareTag("Shotgun_Ammo"))
             {
-                var shotgunGun = shotGunOBJ.GetComponent<Gun>();
-                shotgunGun.addedAmmo += Random.Range(10, 80); // Random Value cuz why not lol
+                var shotGun = shotGunOBJ.GetComponent<Gun>();
+                int ammoToAdd = Random.Range(10, 81); // Random Value cuz why not lol
+                shotGun.addedAmmo += ammoToAdd;
                 SFXManager.Instance.PlaySFX("Power Up");
                 powerUpText.gameObject.SetActive(true);
-                powerUpText.text = "Added " + shotgunGun.addedAmmo + " Shotgun bullets";
+                powerUpText.text = "Added " + ammoToAdd + " Shotty bullets";
                 Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
                 PhotonView otherView = other.GetComponent<PhotonView>();
                 if (otherView != null)
@@ -275,8 +276,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                 float damageBoost = 20f; // Increase damage by 20
                 float duration = 30f;
 
-                kalashnikovOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
-                shotGunOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
+                // Apply power-up only to the currently active weapon
+                if (kalashnikovOBJ.activeSelf)
+                {
+                    kalashnikovOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
+                }
+                else if (shotGunOBJ.activeSelf)
+                {
+                    shotGunOBJ.GetComponent<Gun>().Helper_ActivateDamageBoost(damageBoost, duration);
+                }
                 powerUpText.gameObject.SetActive(true);
                 powerUpText.text = "+20 Damage for 30 SEC";
                 Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 3267822327729420772}
   - component: {fileID: 3691012131838906069}
   - component: {fileID: 8662254088553557507}
+  - component: {fileID: 4260073544914244194}
   m_Layer: 0
   m_Name: Cola
   m_TagString: Cola
@@ -30,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7324701908941806345}
   m_LocalRotation: {x: -0, y: -0.2588186, z: -0, w: 0.965926}
-  m_LocalPosition: {x: 0, y: 0.81, z: 0}
+  m_LocalPosition: {x: -0.04, y: 0.81, z: -0.02}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 0}
@@ -151,3 +152,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 10.937355, y: 14.00326, z: 11.777418}
   m_Center: {x: -1.3933516, y: -0.20981312, z: -0.66030604}
+--- !u!54 &4260073544914244194
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7324701908941806345}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 74
+  m_CollisionDetection: 0

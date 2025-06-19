@@ -27,7 +27,7 @@ public class Gun : MonoBehaviour
     [Header("UI")]
     public TMP_Text ammoText;
     public TMP_Text reserveAmmoText;
-    public TMP_Text friendlyFireWarning;
+    public GameObject friendlyFireWarning;
     [Header("Anti-Clipping")]
     public Transform weaponModel; // Assign the part of the gun mesh to hide
     public float clipCheckDistance = 0.5f; // Distance from camera to check wall
@@ -44,6 +44,7 @@ public class Gun : MonoBehaviour
             Debug.LogError("[Gun] PhotonView is NULL! RPCs won't work.");
         currentAmmo = maxAmmo;
         defaultLocalPos = weaponModel.localPosition;
+        damage = originalDamage;
     }
     void Update()
     {
@@ -137,7 +138,7 @@ public class Gun : MonoBehaviour
                         if (shooterTeam == targetTeam)
                         {
                             Debug.Log("[Gun] Friendly fire blocked.");
-                            friendlyFireWarning.gameObject.SetActive(true);
+                            friendlyFireWarning.SetActive(true);
                             Invoke(nameof(Helper_hideFriendlyFireWarning), 3f);
                             return;
                         }
@@ -193,7 +194,7 @@ public class Gun : MonoBehaviour
     }
     void Helper_hideFriendlyFireWarning()
     {
-        friendlyFireWarning.gameObject.SetActive(false);
+        friendlyFireWarning.SetActive(false);
     }
     public void Helper_ActivateDamageBoost(float boostAmnt, float boostDuration)
     {

@@ -48,9 +48,10 @@ public class RoomManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        Debug.Log("RoomManager detected OnLeftRoom");
+        Debug.Log("[RoomManager] OnLeftRoom Called");
         Destroy(gameObject);
         SceneManager.LoadScene("Menu");
+        PhotonNetwork.JoinLobby();
     }
 
     public void AssignTeams()

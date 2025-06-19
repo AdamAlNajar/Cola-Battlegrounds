@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9186211566333799908}
   - component: {fileID: 400747596887744649}
   - component: {fileID: 8999970575419311162}
+  - component: {fileID: 8985808663252355269}
   m_Layer: 0
   m_Name: Pepsi
   m_TagString: Untagged
@@ -114,6 +115,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.07636663, y: 0.07596341, z: 0.13546798}
   m_Center: {x: 0.000000047683717, y: 0.00020142646, z: 0.067734}
+--- !u!54 &8985808663252355269
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747186359102481153}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 90
+  m_CollisionDetection: 0
 --- !u!1 &7328072774618274776
 GameObject:
   m_ObjectHideFlags: 0
