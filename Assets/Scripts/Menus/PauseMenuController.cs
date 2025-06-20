@@ -41,6 +41,8 @@ public class PauseMenuController : MonoBehaviourPunCallbacks
         isLeaving = true;
         Time.timeScale = 1f;
         PhotonNetwork.LeaveRoom();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void ResumeMatch()

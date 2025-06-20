@@ -328,7 +328,6 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     }
     public void TakeDamage(float damage, string attackerName)
     {
-        // Proceed with damage if enemy
         photonView.RPC(nameof(RPC_TakeDamage), photonView.Owner, damage, attackerName);
         SFXManager.Instance.PlaySFX("Take Damage");
     }
@@ -336,6 +335,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     [PunRPC]
     public void RPC_TakeDamage(float damage, string attackerName)
     {
+        if (!photonView.IsMine)
+            return;
         currentHealth -= damage;
         if (currentHealth <= 0)
         {
@@ -371,6 +372,27 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         {
             objRenderer.material.color = color;
         }
+    }
+    [PunRPC]
+    public void RPC_GiveKillAmmo()
+    {
+        if (!photonView.IsMine) return;
+
+        if (kalashnikovOBJ.activeSelf)
+        {
+            var gun = kalashnikovOBJ.GetComponent<Gun>();
+            gun.addedAmmo += 15;
+        }
+        else if (shotGunOBJ.activeSelf)
+        {
+            var gun = shotGunOBJ.GetComponent<Gun>();
+            gun.addedAmmo += 5;
+        }
+
+        powerUpText.gameObject.SetActive(true);
+        powerUpText.text = "+Ammo for Kill!";
+        Helper_HideGameObjectAfterDelay(powerUpText.gameObject, 3f);
+        SFXManager.Instance.PlaySFX("Power Up");
     }
 
     void SyncTeamFromCustomProperties()

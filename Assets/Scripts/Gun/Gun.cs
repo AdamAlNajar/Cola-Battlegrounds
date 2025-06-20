@@ -19,7 +19,7 @@ public class Gun : MonoBehaviour
     public GameObject bulletImpactPrefab;
     PhotonView pv, playerPV; // Networking
     [Header("Ammo")]
-    [SerializeField] int currentAmmo;
+    public int currentAmmo;
     [SerializeField] int maxAmmo;
     public float reloadTime;
     public int addedAmmo;
@@ -28,11 +28,6 @@ public class Gun : MonoBehaviour
     public TMP_Text ammoText;
     public TMP_Text reserveAmmoText;
     public GameObject friendlyFireWarning;
-    [Header("Anti-Clipping")]
-    public Transform weaponModel; // Assign the part of the gun mesh to hide
-    public float clipCheckDistance = 0.5f; // Distance from camera to check wall
-    Vector3 defaultLocalPos;
-
     [Header("Other")]
     Coroutine damageBoostRoutine;
     float originalDamage;
@@ -42,16 +37,20 @@ public class Gun : MonoBehaviour
         playerPV = GetComponentInParent<PhotonView>(); // The guns pv
         if (pv == null)
             Debug.LogError("[Gun] PhotonView is NULL! RPCs won't work.");
-        currentAmmo = maxAmmo;
-        defaultLocalPos = weaponModel.localPosition;
-        damage = originalDamage;
+        originalDamage = damage;
+    }
+    public void InitializeAmmo(int ammo, int reserve)
+    {
+        currentAmmo = ammo;
+        addedAmmo = reserve;
     }
     void Update()
     {
         if (!playerPV.IsMine)
             return;
         UpdateAmmoUI();
-        HandleClipping();
+        if (isReloading)
+            return;
         if (currentAmmo <= 10 && Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(Reload());
@@ -70,30 +69,17 @@ public class Gun : MonoBehaviour
             Shoot();
         }
     }
-    void HandleClipping()
-    {
-        RaycastHit hit;
-        Vector3 origin = gunCam.transform.position;
-        Vector3 direction = gunCam.transform.forward;
-
-        if (Physics.Raycast(origin, direction, out hit, clipCheckDistance))
-        {
-            // Push weapon back
-            weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, defaultLocalPos - new Vector3(0, 0, 0.2f), Time.deltaTime * 10f);
-        }
-        else
-        {
-            // Reset to original position
-            weaponModel.localPosition = Vector3.Lerp(weaponModel.localPosition, defaultLocalPos, Time.deltaTime * 10f);
-        }
-    }
     private IEnumerator Reload()
     {
-        isReloading = true; // Set to true to prevent reloading while already reloading.
+        isReloading = true;
         yield return new WaitForSeconds(reloadTime);
-        // Add ammo to currentAmmo and subtract from addedAmmo.
-        currentAmmo += addedAmmo;
-        addedAmmo = 0;
+
+        int ammoNeeded = maxAmmo - currentAmmo;
+        int ammoToReload = Mathf.Min(ammoNeeded, addedAmmo);
+
+        currentAmmo += ammoToReload;
+        addedAmmo -= ammoToReload;
+
         isReloading = false;
     }
 

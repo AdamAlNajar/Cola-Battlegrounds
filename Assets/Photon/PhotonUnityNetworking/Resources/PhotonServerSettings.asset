@@ -49,6 +49,7 @@ MonoBehaviour:
   - RPC_StartMatch
   - RPC_SetFFAColor
   - RPC_RequestDestroyObject
+  - RPC_GiveKillAmmo
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

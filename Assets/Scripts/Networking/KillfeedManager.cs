@@ -16,7 +16,7 @@ public class KillfeedManager : MonoBehaviourPun
     public void RPC_GetKill(string _killer, string _attakced)
     {
         GameObject item = Instantiate(killfeedItemPrefab, killfeedItemParent);
-        item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = _killer + " Killed: " + _attakced;
+        item.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = $"{_killer} Killed {_attakced}";
         Destroy(item, 2f);
     }
 }

@@ -8,7 +8,10 @@ public class PlayerManager : MonoBehaviour
     PhotonView photonView;
     GameObject playerController;
     public float spawnDelay = 3f;
-
+    private int savedCurrentAmmo_AK = 30; // Default starting ammo
+    private int savedReserveAmmo_AK = 90;
+    private int savedCurrentAmmo_Shotgun = 8;
+    private int savedReserveAmmo_Shotgun = 32;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();
@@ -34,7 +37,17 @@ public class PlayerManager : MonoBehaviour
             Quaternion.identity,
             0,
             new object[] { photonView.ViewID });
+        var playerControllerSc = playerController.GetComponent<PlayerController>();
+        if (playerControllerSc != null)
+        {
+            var ak = playerControllerSc.kalashnikovOBJ.GetComponent<Gun>();
+            var sg = playerControllerSc.shotGunOBJ.GetComponent<Gun>();
 
+            if (ak != null)
+                ak.InitializeAmmo(savedCurrentAmmo_AK, savedReserveAmmo_AK);
+            if (sg != null)
+                sg.InitializeAmmo(savedCurrentAmmo_Shotgun, savedReserveAmmo_Shotgun);
+        }
         if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
         {
             if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
@@ -56,6 +69,7 @@ public class PlayerManager : MonoBehaviour
     }
     public void Die(string _victimName)
     {
+        var playerControllerSc = playerController.GetComponent<PlayerController>();
         //Step 1 : Show death screen
         if (photonView.IsMine)
         {
@@ -69,6 +83,23 @@ public class PlayerManager : MonoBehaviour
                 Debug.Log("DeathController NULL");
             }
         }
+        
+        // Step 1.5 : Save Ammo
+        if (playerController != null)
+        {
+            var gunSwitch = playerControllerSc.GetComponentInChildren<GunSwitch>();
+            if (gunSwitch != null)
+            {
+                var ak = playerControllerSc.kalashnikovOBJ.GetComponent<Gun>();
+                var sg = playerControllerSc.shotGunOBJ.GetComponent<Gun>();
+
+                savedCurrentAmmo_AK = ak.currentAmmo;
+                savedReserveAmmo_AK = ak.addedAmmo;
+
+                savedCurrentAmmo_Shotgun = sg.currentAmmo;
+                savedReserveAmmo_Shotgun = sg.addedAmmo;
+            }
+        }
         //Step 2 : Delete player
         PhotonNetwork.Destroy(playerController);
         //Step 3 : Show kill on Killfeed
@@ -76,8 +107,26 @@ public class PlayerManager : MonoBehaviour
         "RPC_GetKill",
         RpcTarget.All,
         _victimName,
-        PhotonNetwork.LocalPlayer.NickName
+        PhotonNetwork.LocalPlayer.NickName// attacker
         );
+        //Step 3.5 : Reward killer with ammo on kill
+        foreach (var player in PhotonNetwork.PlayerList)
+        {
+            if (player.NickName == _victimName)
+            {
+                GameObject[] playerObjects = GameObject.FindGameObjectsWithTag("Player");
+                foreach (var obj in playerObjects)
+                {
+                    PhotonView view = obj.GetComponent<PhotonView>();
+                    if (view != null && view.Owner == player)
+                    {
+                        view.RPC("RPC_GiveKillAmmo", player); // call ammo RPC on killer
+                        break;
+                    }
+                }
+                break;
+            }
+        }
         //Step 4 : Spawn Player again
         if (MatchTimer.Instance != null && MatchTimer.Instance.isMatchActive)
             StartCoroutine(CreateControllerWithDelay(spawnDelay));
