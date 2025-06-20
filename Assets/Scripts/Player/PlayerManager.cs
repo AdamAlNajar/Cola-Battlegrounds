@@ -8,10 +8,10 @@ public class PlayerManager : MonoBehaviour
     PhotonView photonView;
     GameObject playerController;
     public float spawnDelay = 3f;
-    private int savedCurrentAmmo_AK = 30; // Default starting ammo
-    private int savedReserveAmmo_AK = 90;
-    private int savedCurrentAmmo_Shotgun = 8;
-    private int savedReserveAmmo_Shotgun = 32;
+    private int savedCurrentAmmo_AK = 55; // Default starting ammo
+    private int savedReserveAmmo_AK = 75;
+    private int savedCurrentAmmo_Shotgun = 50;
+    private int savedReserveAmmo_Shotgun = 10;
     void Awake()
     {
         photonView = GetComponent<PhotonView>();

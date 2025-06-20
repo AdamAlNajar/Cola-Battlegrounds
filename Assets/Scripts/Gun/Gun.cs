@@ -31,6 +31,7 @@ public class Gun : MonoBehaviour
     [Header("Other")]
     Coroutine damageBoostRoutine;
     float originalDamage;
+    Coroutine currentReloadRoutine;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -53,7 +54,8 @@ public class Gun : MonoBehaviour
             return;
         if (currentAmmo <= 10 && Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(Reload());
+            if (currentReloadRoutine == null)
+                currentReloadRoutine = StartCoroutine(Reload());
         }
         if (currentAmmo <= 0)
             return;
@@ -81,6 +83,7 @@ public class Gun : MonoBehaviour
         addedAmmo -= ammoToReload;
 
         isReloading = false;
+        currentReloadRoutine = null;
     }
 
     void Shoot()
@@ -196,5 +199,14 @@ public class Gun : MonoBehaviour
         SFXManager.Instance.PlaySFX("Power Up");
         yield return new WaitForSeconds(boostDuration);
         damage = originalDamage;
+    }
+    void OnDisable()
+    {
+        if (currentReloadRoutine != null)
+        {
+            StopCoroutine(currentReloadRoutine);
+            currentReloadRoutine = null;
+            isReloading = false; // Reset state
+        }
     }
 }
