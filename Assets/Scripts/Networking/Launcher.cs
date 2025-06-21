@@ -74,6 +74,7 @@ public class Launcher : MonoBehaviourPunCallbacks
     public override void OnLeftRoom()
     {
         MenuManager.instance.OpenMenu("title menu");
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedRoom()

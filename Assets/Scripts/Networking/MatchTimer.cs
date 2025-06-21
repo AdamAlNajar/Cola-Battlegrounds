@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine.SceneManagement;
 public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
@@ -18,6 +19,7 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
     }
     public float matchTime = 60f; // in SEC. 
     public TMP_Text matchTimerText;
+    public TMP_Text winner;
     public float timer;
     public bool isMatchActive;
     public PhotonView PV;
@@ -89,6 +91,16 @@ public class MatchTimer : MonoBehaviourPunCallbacks,IPunObservable
         FindObjectOfType<PlayerController>().enabled = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.FFA)
+        {
+            Player topPlayer = MatchStatsManager.Instance.GetTopKiller();
+            winner.text = "Winner of match - " + topPlayer.NickName;
+        }
+        else if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+        {
+            Team topTeam = MatchStatsManager.Instance.GetTopTeam();
+            winner.text = "Winning Team of match - " + topTeam;
+        }
     }
     //This method is better for syncing frequent updates to not flood photons servers
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
