@@ -23,20 +23,27 @@ public class PlayerManager : MonoBehaviour
     IEnumerator CreateControllerWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        // ✅ Check again after the delay
+
         if (MatchTimer.Instance == null || !MatchTimer.Instance.isMatchActive)
         {
             Debug.Log("[PlayerManager] Respawn aborted — match is not active.");
             yield break;
         }
         Transform spawnpoint = SpawnManager.Instance.getSpawnPoint();
-
-        playerController = PhotonNetwork.Instantiate(
+        if (MatchTimer.Instance.isMatchActive)
+        {
+            playerController = PhotonNetwork.Instantiate(
             Path.Combine("PhotonPrefabs", "PlayerController"),
             spawnpoint.position,
             Quaternion.identity,
             0,
             new object[] { photonView.ViewID });
+        }
+        else
+        {
+            yield break;
+        }
+       
         var playerControllerSc = playerController.GetComponent<PlayerController>();
         if (playerControllerSc != null)
         {
