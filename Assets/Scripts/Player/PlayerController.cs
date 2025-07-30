@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
     public Image healthBarImage;
     public GameObject gameplayCanvas;
     public TMP_Text powerUpText;
+    public TMP_Text teamText;
+    public GameObject teamTextOBJ;
 
     [Header("Gun Objects")]
     public GameObject kalashnikovOBJ;
@@ -94,7 +96,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
                     Team myTeam = (Team)System.Enum.Parse(typeof(Team), teamValue.ToString());
                     this.team = myTeam;
                     photonView.RPC(nameof(RPC_SetTeamColor), RpcTarget.AllBuffered, (int)myTeam);
-                    Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Assigned to team : " + myTeam);
+                    // Debug.Log(PhotonNetwork.LocalPlayer.NickName + " Assigned to team : " + myTeam);
                 }
                 else
                 {
@@ -106,6 +108,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         // Longer delay for safety on late joiners
         Invoke(nameof(SyncTeamFromCustomProperties), 2f);
     }
+
     void Update()
     {
         if (!photonView.IsMine)
@@ -115,6 +118,15 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         if (transform.position.y < -30f)
         {
             playerManager.Die(PhotonNetwork.LocalPlayer.NickName);
+        }
+        if (GameModeManager.Instance.GetCurrentGameMode() == GameMode.TDM)
+        {
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue("Team", out object teamValue))
+            {
+                Team myTeam = (Team)System.Enum.Parse(typeof(Team), teamValue.ToString());
+                teamTextOBJ.SetActive(true);
+                teamText.text = "TEAM: " + myTeam;
+            }
         }
         // We are grounded, so recalculate move direction based on axes
         Vector3 forward = transform.TransformDirection(Vector3.forward);
