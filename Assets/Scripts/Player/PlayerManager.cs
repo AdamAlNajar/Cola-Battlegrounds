@@ -2,6 +2,7 @@ using System.IO;
 using UnityEngine;
 using Photon.Pun;
 using System.Collections;
+using System.Linq;
 // The class that manages player data, respawning and death, and RPC
 public class PlayerManager : MonoBehaviour
 {
@@ -116,6 +117,12 @@ public class PlayerManager : MonoBehaviour
         _victimName,
         PhotonNetwork.LocalPlayer.NickName// attacker
         );
+        // Record Deaths
+        Photon.Realtime.Player victim = PhotonNetwork.PlayerList.FirstOrDefault(p => p.NickName == _victimName);
+        if (victim != null)
+        {
+            KillfeedManager.Instance.AddDeathToPlayer(victim);
+        }
         //Step 3.5 : Reward killer with ammo on kill
         foreach (var player in PhotonNetwork.PlayerList)
         {

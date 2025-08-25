@@ -26,7 +26,7 @@ public class KillfeedManager : MonoBehaviourPun
             AddKillToPlayer(killer);
         }
     }
-    void AddKillToPlayer(Photon.Realtime.Player killer)
+    public void AddKillToPlayer(Photon.Realtime.Player killer)
     {
         ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
 
@@ -38,5 +38,12 @@ public class KillfeedManager : MonoBehaviourPun
 
         props["Kills"] = currentKills + 1;
         killer.SetCustomProperties(props);
+    }
+    public void AddDeathToPlayer(Photon.Realtime.Player victim)
+    {
+        ExitGames.Client.Photon.Hashtable props = new ExitGames.Client.Photon.Hashtable();
+        int currentDeaths = victim.CustomProperties.ContainsKey("Deaths") ? (int)victim.CustomProperties["Deaths"] : 0;
+        props["Deaths"] = currentDeaths + 1;
+        victim.SetCustomProperties(props);
     }
 }
