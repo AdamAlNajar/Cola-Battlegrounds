@@ -121,7 +121,7 @@ public class PlayerManager : MonoBehaviour
         Photon.Realtime.Player victim = PhotonNetwork.PlayerList.FirstOrDefault(p => p.NickName == _victimName);
         if (victim != null)
         {
-            KillfeedManager.Instance.AddDeathToPlayer(victim);
+            KillfeedManager.Instance.AddDeathToPlayer(PhotonNetwork.LocalPlayer);
         }
         //Step 3.5 : Reward killer with ammo on kill
         foreach (var player in PhotonNetwork.PlayerList)
