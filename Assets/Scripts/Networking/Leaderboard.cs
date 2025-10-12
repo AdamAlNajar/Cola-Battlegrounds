@@ -20,6 +20,7 @@ public class Leaderboard : MonoBehaviourPunCallbacks
     {
         LeaderboardItem item = Instantiate(leaderboardItemPrefab, container).GetComponent<LeaderboardItem>();
         item.initialize(player);
+        
         leaderboardItems[player] = item;
     }
     public override void OnPlayerEnteredRoom(Player newPlayer)

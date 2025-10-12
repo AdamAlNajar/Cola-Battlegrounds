@@ -32,6 +32,8 @@ public class Gun : MonoBehaviour
     Coroutine damageBoostRoutine;
     float originalDamage;
     Coroutine currentReloadRoutine;
+    public GameObject model;
+    public bool canShoot = true;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -39,6 +41,10 @@ public class Gun : MonoBehaviour
         if (pv == null)
             Debug.LogError("[Gun] PhotonView is NULL! RPCs won't work.");
         originalDamage = damage;
+        if(model != null)
+        {
+            model.SetActive(true);
+        }
     }
     public void InitializeAmmo(int ammo, int reserve)
     {
@@ -60,13 +66,13 @@ public class Gun : MonoBehaviour
         if (currentAmmo <= 0)
             return;
         //Auto Guns
-        if (Input.GetMouseButton(0) && isAuto && Time.time >= nextTimeToFire)
+        if (Input.GetMouseButton(0) && isAuto && Time.time >= nextTimeToFire && canShoot)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
         }
         //Manual Guns
-        if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto)
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto && canShoot)
         {
             Shoot();
         }
@@ -156,6 +162,25 @@ public class Gun : MonoBehaviour
         if (shootParticleEffect != null)
             shootParticleEffect.Play();
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "env" && model != null)
+        {
+            model.SetActive(false);
+            canShoot = false;
+            Debug.Log("hit env");
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if(other.tag == "env" && model != null)
+        {
+            model.SetActive(true);
+            canShoot = true;
+            Debug.Log("left env");
+        }
+    }
     void UpdateAmmoUI()
     {
         ammoText.color = Color.white;
@@ -208,5 +233,13 @@ public class Gun : MonoBehaviour
             currentReloadRoutine = null;
             isReloading = false; // Reset state
         }
+    }
+    private void OnEnable()
+    {
+        if (model != null)
+        {
+            model.SetActive(true);
+        }
+        canShoot = true;
     }
 }

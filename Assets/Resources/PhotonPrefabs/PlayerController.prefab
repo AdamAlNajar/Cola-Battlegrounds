@@ -7424,6 +7424,8 @@ GameObject:
   - component: {fileID: 8063031115333669117}
   - component: {fileID: 7182219488320789906}
   - component: {fileID: 8089596210952133438}
+  - component: {fileID: 581611438069992719}
+  - component: {fileID: 2546070251125457150}
   m_Layer: 3
   m_Name: Shotgun
   m_TagString: Shotgun
@@ -7474,6 +7476,8 @@ MonoBehaviour:
   ammoText: {fileID: 4381725435923497610}
   reserveAmmoText: {fileID: 938265066263870888}
   friendlyFireWarning: {fileID: 4594567631171153815}
+  model: {fileID: 5968392925220396953}
+  canShoot: 1
 --- !u!114 &8089596210952133438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7496,6 +7500,35 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!65 &581611438069992719
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254864387537816135}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.17111202, y: 0.055017233, z: 0.06680088}
+  m_Center: {x: 2.4545946, y: 0.33175546, z: -0.58244693}
+--- !u!54 &2546070251125457150
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254864387537816135}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7367519957260340388
 GameObject:
   m_ObjectHideFlags: 0
@@ -7887,6 +7920,8 @@ GameObject:
   - component: {fileID: 7317750167884844021}
   - component: {fileID: 2711676641867645070}
   - component: {fileID: 8623475465294404133}
+  - component: {fileID: 7077810988737282750}
+  - component: {fileID: 2018583017295221542}
   m_Layer: 3
   m_Name: AK47
   m_TagString: AK47
@@ -7937,6 +7972,8 @@ MonoBehaviour:
   ammoText: {fileID: 4381725435923497610}
   reserveAmmoText: {fileID: 938265066263870888}
   friendlyFireWarning: {fileID: 4594567631171153815}
+  model: {fileID: 6521678648716916357}
+  canShoot: 1
 --- !u!114 &8623475465294404133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7959,6 +7996,35 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!54 &7077810988737282750
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7982084626160324943}
+  serializedVersion: 2
+  m_Mass: 0.0000001
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &2018583017295221542
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7982084626160324943}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.24284548, y: 0.111003965, z: 0.112667345}
+  m_Center: {x: 2.0903578, y: 0.34564036, z: -0.005512502}
 --- !u!1 &8081926674462853387
 GameObject:
   m_ObjectHideFlags: 0
