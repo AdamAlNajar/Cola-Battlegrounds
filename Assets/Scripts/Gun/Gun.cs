@@ -34,6 +34,7 @@ public class Gun : MonoBehaviour
     Coroutine currentReloadRoutine;
     public GameObject model;
     public bool canShoot = true;
+    public bool inEnv = false;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -53,6 +54,8 @@ public class Gun : MonoBehaviour
     }
     void Update()
     {
+        if (inEnv)
+            return;
         if (!playerPV.IsMine)
             return;
         UpdateAmmoUI();
@@ -169,6 +172,7 @@ public class Gun : MonoBehaviour
         {
             model.SetActive(false);
             canShoot = false;
+            inEnv = true;
             Debug.Log("hit env");
         }
     }
@@ -178,6 +182,7 @@ public class Gun : MonoBehaviour
         {
             model.SetActive(true);
             canShoot = true;
+            inEnv = false;
             Debug.Log("left env");
         }
     }
@@ -233,13 +238,5 @@ public class Gun : MonoBehaviour
             currentReloadRoutine = null;
             isReloading = false; // Reset state
         }
-    }
-    private void OnEnable()
-    {
-        if (model != null)
-        {
-            model.SetActive(true);
-        }
-        canShoot = true;
     }
 }

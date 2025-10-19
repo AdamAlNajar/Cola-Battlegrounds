@@ -7478,6 +7478,7 @@ MonoBehaviour:
   friendlyFireWarning: {fileID: 4594567631171153815}
   model: {fileID: 5968392925220396953}
   canShoot: 1
+  inEnv: 0
 --- !u!114 &8089596210952133438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7974,6 +7975,7 @@ MonoBehaviour:
   friendlyFireWarning: {fileID: 4594567631171153815}
   model: {fileID: 6521678648716916357}
   canShoot: 1
+  inEnv: 0
 --- !u!114 &8623475465294404133
 MonoBehaviour:
   m_ObjectHideFlags: 0
