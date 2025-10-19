@@ -7426,6 +7426,7 @@ GameObject:
   - component: {fileID: 8089596210952133438}
   - component: {fileID: 581611438069992719}
   - component: {fileID: 2546070251125457150}
+  - component: {fileID: 3283251181004887231}
   m_Layer: 3
   m_Name: Shotgun
   m_TagString: Shotgun
@@ -7530,6 +7531,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!210 &3283251181004887231
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7254864387537816135}
+  m_Enabled: 1
+  m_SortingLayerID: 1406873763
+  m_SortingLayer: 1
+  m_SortingOrder: 0
 --- !u!1 &7367519957260340388
 GameObject:
   m_ObjectHideFlags: 0
@@ -7923,6 +7935,7 @@ GameObject:
   - component: {fileID: 8623475465294404133}
   - component: {fileID: 7077810988737282750}
   - component: {fileID: 2018583017295221542}
+  - component: {fileID: 4660374386787700645}
   m_Layer: 3
   m_Name: AK47
   m_TagString: AK47
@@ -8027,6 +8040,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.24284548, y: 0.111003965, z: 0.112667345}
   m_Center: {x: 2.0903578, y: 0.34564036, z: -0.005512502}
+--- !u!210 &4660374386787700645
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7982084626160324943}
+  m_Enabled: 1
+  m_SortingLayerID: 1406873763
+  m_SortingLayer: 1
+  m_SortingOrder: 0
 --- !u!1 &8081926674462853387
 GameObject:
   m_ObjectHideFlags: 0

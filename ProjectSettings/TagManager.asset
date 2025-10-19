@@ -54,3 +54,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Gun
+    uniqueID: 1406873763
+    locked: 0
+  - name: Env
+    uniqueID: 1093189571
+    locked: 0

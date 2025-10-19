@@ -54,8 +54,6 @@ public class Gun : MonoBehaviour
     }
     void Update()
     {
-        if (inEnv)
-            return;
         if (!playerPV.IsMine)
             return;
         UpdateAmmoUI();
@@ -170,7 +168,6 @@ public class Gun : MonoBehaviour
     {
         if(other.tag == "env" && model != null)
         {
-            model.SetActive(false);
             canShoot = false;
             inEnv = true;
             Debug.Log("hit env");
@@ -180,7 +177,6 @@ public class Gun : MonoBehaviour
     {
         if(other.tag == "env" && model != null)
         {
-            model.SetActive(true);
             canShoot = true;
             inEnv = false;
             Debug.Log("left env");
