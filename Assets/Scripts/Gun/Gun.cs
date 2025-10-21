@@ -33,8 +33,6 @@ public class Gun : MonoBehaviour
     float originalDamage;
     Coroutine currentReloadRoutine;
     public GameObject model;
-    public bool canShoot = true;
-    public bool inEnv = false;
     void Awake()
     {
         pv = GetComponent<PhotonView>(); // The guns pv
@@ -45,6 +43,10 @@ public class Gun : MonoBehaviour
         if(model != null)
         {
             model.SetActive(true);
+        }
+        if (!pv.IsMine)
+        {
+            Destroy(gunCam.gameObject);
         }
     }
     public void InitializeAmmo(int ammo, int reserve)
@@ -67,13 +69,13 @@ public class Gun : MonoBehaviour
         if (currentAmmo <= 0)
             return;
         //Auto Guns
-        if (Input.GetMouseButton(0) && isAuto && Time.time >= nextTimeToFire && canShoot)
+        if (Input.GetMouseButton(0) && isAuto && Time.time >= nextTimeToFire)
         {
             nextTimeToFire = Time.time + 1f / fireRate;
             Shoot();
         }
         //Manual Guns
-        if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto && canShoot)
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextTimeToFire && !isAuto)
         {
             Shoot();
         }
@@ -164,24 +166,6 @@ public class Gun : MonoBehaviour
             shootParticleEffect.Play();
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "env" && model != null)
-        {
-            canShoot = false;
-            inEnv = true;
-            Debug.Log("hit env");
-        }
-    }
-    void OnTriggerExit(Collider other)
-    {
-        if(other.tag == "env" && model != null)
-        {
-            canShoot = true;
-            inEnv = false;
-            Debug.Log("left env");
-        }
-    }
     void UpdateAmmoUI()
     {
         ammoText.color = Color.white;
