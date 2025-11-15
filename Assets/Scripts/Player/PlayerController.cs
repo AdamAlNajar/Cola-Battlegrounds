@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         //Remote Player
         if (!photonView.IsMine)
         {
-            Camera cam = cameraHolder.GetComponentInChildren<Camera>();
+            Camera cam = cameraHolder.GetComponentInChildren<Camera>(); 
             
             PostProcessLayer ppLayer = cameraHolder.GetComponentInChildren<PostProcessLayer>();
             AudioListener audioListener = cameraHolder.GetComponentInChildren<AudioListener>();

@@ -5262,7 +5262,6 @@ GameObject:
   - component: {fileID: 6351778528665659458}
   - component: {fileID: 5055045314094453302}
   - component: {fileID: 3923995928908474706}
-  - component: {fileID: 2031012299455989519}
   m_Layer: 3
   m_Name: MODEL_PT2
   m_TagString: Untagged
@@ -5333,24 +5332,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2031012299455989519
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 877328119056633343}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 6.5
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &972915727802684734
 GameObject:
   m_ObjectHideFlags: 0
@@ -6037,7 +6018,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5119248586064371442}
-  - {fileID: 5401014042106575867}
   m_Father: {fileID: 6217979710544431286}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6069,10 +6049,10 @@ Camera:
   field of view: 30.5
   orthographic: 0
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 127
   m_RenderingPath: 3
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -6352,80 +6332,6 @@ MonoBehaviour:
   - 60
   - 30.5
   fovTransitionSpeed: 5
---- !u!1 &4453321774184091727
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5401014042106575867}
-  - component: {fileID: 1781019416170470344}
-  m_Layer: 0
-  m_Name: GunCam
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5401014042106575867
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4453321774184091727}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 3680360809631227883}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!20 &1781019416170470344
-Camera:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4453321774184091727}
-  m_Enabled: 1
-  serializedVersion: 2
-  m_ClearFlags: 3
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
-  m_FOVAxisMode: 0
-  m_SensorSize: {x: 36, y: 24}
-  m_LensShift: {x: 0, y: 0}
-  m_FocalLength: 50
-  m_NormalizedViewPortRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
-  near clip plane: 0.03
-  far clip plane: 1000
-  field of view: 60
-  orthographic: 0
-  orthographic size: 5
-  m_Depth: 1
-  m_CullingMask:
-    serializedVersion: 2
-    m_Bits: 8
-  m_RenderingPath: -1
-  m_TargetTexture: {fileID: 0}
-  m_TargetDisplay: 0
-  m_TargetEye: 3
-  m_HDR: 1
-  m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
-  m_StereoConvergence: 10
-  m_StereoSeparation: 0.022
 --- !u!1 &4594567631171153815
 GameObject:
   m_ObjectHideFlags: 0
@@ -7265,7 +7171,6 @@ GameObject:
   - component: {fileID: 6205038594312011418}
   - component: {fileID: 1842564628964503840}
   - component: {fileID: 616675762845787613}
-  - component: {fileID: 2631562025632829786}
   m_Layer: 3
   m_Name: MODEL
   m_TagString: Untagged
@@ -7336,24 +7241,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2631562025632829786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6521678648716916357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 6.5
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &6844101146298718639
 GameObject:
   m_ObjectHideFlags: 0
@@ -7540,7 +7427,7 @@ MonoBehaviour:
   fireRate: 7
   shootParticleEffect: {fileID: 3753855448571092157}
   scShake: {fileID: 4780533094740029868}
-  gunCam: {fileID: 1781019416170470344}
+  gunCam: {fileID: 0}
   bulletImpactPrefab: {fileID: 1009353784965211921, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 100
@@ -8004,7 +7891,7 @@ MonoBehaviour:
   fireRate: 15
   shootParticleEffect: {fileID: 2066573096920302919}
   scShake: {fileID: 4780533094740029868}
-  gunCam: {fileID: 1781019416170470344}
+  gunCam: {fileID: 0}
   bulletImpactPrefab: {fileID: 1009353784965211921, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 250
@@ -13042,7 +12929,6 @@ GameObject:
   - component: {fileID: 1062762422921622096}
   - component: {fileID: 6185196430738842007}
   - component: {fileID: 7406029883229436315}
-  - component: {fileID: 1977972170419033512}
   m_Layer: 3
   m_Name: MODEL_PT1
   m_TagString: Untagged
@@ -13113,24 +12999,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1977972170419033512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8521213577953941250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  outlineMode: 1
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
-  outlineWidth: 6.5
-  precomputeOutline: 0
-  bakeKeys: []
-  bakeValues: []
 --- !u!1 &8621107517945811883
 GameObject:
   m_ObjectHideFlags: 0
