@@ -1,0 +1,11 @@
+Model Information:
+* title:	Wooden Sign - Baked Low Poly
+* source:	https://sketchfab.com/3d-models/wooden-sign-baked-low-poly-0d2fbde1a0a446a1b3bb808664a7e08a
+* author:	JeffK (https://sketchfab.com/jeffkolada)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Wooden Sign - Baked Low Poly" (https://sketchfab.com/3d-models/wooden-sign-baked-low-poly-0d2fbde1a0a446a1b3bb808664a7e08a) by JeffK (https://sketchfab.com/jeffkolada) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

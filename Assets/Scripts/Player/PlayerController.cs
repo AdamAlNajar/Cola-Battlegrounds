@@ -59,13 +59,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         //Remote Player
         if (!photonView.IsMine)
         {
-            Camera cam = cameraHolder.GetComponentInChildren<Camera>(); 
-            
-            PostProcessLayer ppLayer = cameraHolder.GetComponentInChildren<PostProcessLayer>();
-            AudioListener audioListener = cameraHolder.GetComponentInChildren<AudioListener>();
-            Destroy(ppLayer);
-            Destroy(cam);
-            Destroy(audioListener);
+            Destroy(GetComponentInChildren<Camera>().gameObject);
             ////////////////////////
             Destroy(gameplayCanvas);
         }
@@ -160,10 +154,14 @@ public class PlayerController : MonoBehaviourPunCallbacks, IDamageable
         // Player and Camera rotation
         if (canMove)
         {
+            // Vertical rotation (look up/down)
             rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
-            transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+            cameraHolder.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+
+            // Horizontal rotation (player turns left/right)
+            float mouseX = Input.GetAxis("Mouse X") * lookSpeed;
+            transform.Rotate(Vector3.up * mouseX);
         }
     }
     public void SetTeamColor(Team team)

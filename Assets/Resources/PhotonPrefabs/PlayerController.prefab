@@ -5453,6 +5453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3680360809631227883}
+  - {fileID: 5119248586064371442}
   m_Father: {fileID: 3680360809014060869}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6016,8 +6017,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 5119248586064371442}
+  m_Children: []
   m_Father: {fileID: 6217979710544431286}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6305,14 +6305,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4218390902949337674}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8063031115333669117}
   - {fileID: 7317750167884844021}
-  m_Father: {fileID: 3680360809631227883}
-  m_RootOrder: 0
+  m_Father: {fileID: 6217979710544431286}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3556775663567862733
 MonoBehaviour:
@@ -7427,7 +7427,7 @@ MonoBehaviour:
   fireRate: 7
   shootParticleEffect: {fileID: 3753855448571092157}
   scShake: {fileID: 4780533094740029868}
-  gunCam: {fileID: 0}
+  gunCam: {fileID: 3680360809631227885}
   bulletImpactPrefab: {fileID: 1009353784965211921, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 100
@@ -7891,7 +7891,7 @@ MonoBehaviour:
   fireRate: 15
   shootParticleEffect: {fileID: 2066573096920302919}
   scShake: {fileID: 4780533094740029868}
-  gunCam: {fileID: 0}
+  gunCam: {fileID: 3680360809631227885}
   bulletImpactPrefab: {fileID: 1009353784965211921, guid: 3f4ff68ae39f9514db5d89f6fda5029e, type: 3}
   currentAmmo: 0
   maxAmmo: 250

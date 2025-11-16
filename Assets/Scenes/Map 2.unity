@@ -339,6 +339,7 @@ MonoBehaviour:
   gameUI: {fileID: 731962084}
   deathUI: {fileID: 1486233896}
   loadingUI: {fileID: 463853774}
+  ammoNeeded: 1
 --- !u!114 &119008210
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5,8 +5,12 @@ using UnityEngine;
 public class DiscordRPCManager : MonoBehaviour
 {
     public static DiscordRPCManager Instance;
-    Discord.Discord discord;
-    bool discordInit = false;
+
+#if UNITY_STANDALONE_WIN
+    private Discord.Discord discord;
+    private bool discordInit = false;
+#endif
+
     private void Awake()
     {
         if (Instance != null)
@@ -16,10 +20,11 @@ public class DiscordRPCManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        
     }
-    void Start()
+
+    private void Start()
     {
+#if UNITY_STANDALONE_WIN
         try
         {
             discord = new Discord.Discord(1382033954315440249, (ulong)Discord.CreateFlags.NoRequireDiscord);
@@ -30,48 +35,22 @@ public class DiscordRPCManager : MonoBehaviour
             Debug.LogWarning("Discord not available: " + e.Message);
             discordInit = false;
         }
+#endif
     }
+
     private void OnDisable()
     {
-        if (discordInit&& discord != null)
+#if UNITY_STANDALONE_WIN
+        if (discordInit && discord != null)
         {
             discord.Dispose();
         }
+#endif
     }
-    public void ChangeStatus(string state, string details)
+
+    private void Update()
     {
-        if (!discordInit)
-            return;
-        try
-        {
-            var activityManager = discord.GetActivityManager();
-            var activity = new Discord.Activity
-            {
-                State = state,
-                Details = details,
-                Assets =
-                {
-                    LargeImage = "main"
-                }
-            };
-            activityManager.UpdateActivity(activity, (res) =>
-            {
-                if (res == Discord.Result.Ok)
-                {
-                    Debug.Log("Discord activity updated successfully.");
-                }
-                else
-                {
-                    Debug.LogWarning("Failed to update Discord activity: " + res);
-                }
-            });
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning("Discord RPC error: " + e.Message);
-        }
-    }
-    private void Update() {
+#if UNITY_STANDALONE_WIN
         if (discordInit && discord != null)
         {
             try
@@ -84,5 +63,40 @@ public class DiscordRPCManager : MonoBehaviour
                 discordInit = false;
             }
         }
+#endif
+    }
+
+    /// <summary>
+    /// Updates Discord activity. Safe to call on any platform.
+    /// </summary>
+    public void ChangeStatus(string state, string details)
+    {
+#if UNITY_STANDALONE_WIN
+        if (!discordInit) return;
+
+        try
+        {
+            var activityManager = discord.GetActivityManager();
+            var activity = new Discord.Activity
+            {
+                State = state,
+                Details = details,
+                Assets = { LargeImage = "main" }
+            };
+            activityManager.UpdateActivity(activity, (res) =>
+            {
+                if (res == Discord.Result.Ok)
+                    Debug.Log("Discord activity updated successfully.");
+                else
+                    Debug.LogWarning("Failed to update Discord activity: " + res);
+            });
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning("Discord RPC error: " + e.Message);
+        }
+#else
+        // Do nothing on non-Windows platforms
+#endif
     }
 }

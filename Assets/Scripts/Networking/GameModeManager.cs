@@ -13,6 +13,7 @@ public class GameModeManager : MonoBehaviour
     public GameObject gameUI;
     public GameObject deathUI;
     public GameObject loadingUI;
+    public bool ammoNeeded;
     void Awake()
     {
         if (Instance != null)
@@ -25,10 +26,13 @@ public class GameModeManager : MonoBehaviour
 
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "AK47_Ammo"), akAmmoSpawnPos.position, akAmmoSpawnPos.rotation);
-            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Shotgun_Ammo"), shotAmmoSpawnPos.position, shotAmmoSpawnPos.rotation);
-            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Cola"), colaSpawnPos.position, colaSpawnPos.rotation);
-            PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Pepsi"), pepsiSpawnPos.position, pepsiSpawnPos.rotation);
+            if (ammoNeeded)
+            {
+                PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "AK47_Ammo"), akAmmoSpawnPos.position, akAmmoSpawnPos.rotation);
+                PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Shotgun_Ammo"), shotAmmoSpawnPos.position, shotAmmoSpawnPos.rotation);
+                PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Cola"), colaSpawnPos.position, colaSpawnPos.rotation);
+                PhotonNetwork.InstantiateRoomObject(Path.Combine("PhotonPrefabs", "Pepsi"), pepsiSpawnPos.position, pepsiSpawnPos.rotation);
+            }
         }
         Loading();
     }
@@ -47,6 +51,10 @@ public class GameModeManager : MonoBehaviour
             case "Map 2":
                 currentGameMode = GameMode.TDM;
                 DiscordRPCManager.Instance.ChangeStatus("Playing a match", "TDM");
+                break;
+            case "Map 3":
+                currentGameMode = GameMode.FFA;
+                DiscordRPCManager.Instance.ChangeStatus("Playing a match", "FFA");
                 break;
             default:
                 Debug.LogWarning("Scene name does not match a known map, defaulting to FFA.");
